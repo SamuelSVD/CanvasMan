@@ -1,0 +1,12 @@
+__history/
+__recovery/
+Win32/
+*.local
+CanvasMan/CanvasMan/obj
+CanvasMan/CanvasMan/bin
+Installer/bin
+.vs
+*.suo
+Installer/binaries
+*.pfx
+*.exe
