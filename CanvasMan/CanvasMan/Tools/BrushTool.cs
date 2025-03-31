@@ -9,7 +9,7 @@ namespace CanvasMan.Tools {
         private Point? lastPoint = null; // Store the last drawn mouse position as a nullable Point.
 
 		// Constructor to initialize the brush tool
-		public BrushTool(ColourManager colourManager, string name = "Brush", int size = 5) : base(name, colourManager) {
+		public BrushTool(ColourManager colourManager, string name = "Brush", int size = 5) : base(colourManager, name) {
 			BrushSize = size;
 		}
 

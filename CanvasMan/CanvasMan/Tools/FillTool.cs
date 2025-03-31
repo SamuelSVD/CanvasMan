@@ -9,7 +9,7 @@ namespace CanvasMan.Tools {
 		private Bitmap canvasBitmap;        // Reference to the canvas bitmap
 
 		// Constructor to initialize the Fill Tool
-		public FillTool(ColourManager colourManager, string name = "Fill") : base(name, colourManager) {
+		public FillTool(ColourManager colourManager, string name = "Fill") : base(colourManager, name) {
 		}
 
 		// Set the canvas bitmap (required for performing the fill operation)

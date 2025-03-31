@@ -13,7 +13,7 @@ namespace CanvasMan.Tools {
 
 		protected ColourManager ColourManager;
 		// Constructor to initialize the tool's name
-		protected Tool(string name, ColourManager colourManager) {
+		protected Tool(ColourManager colourManager, string name) {
 			Name = name;
 			IsActive = false;
 			ColourManager = colourManager;
