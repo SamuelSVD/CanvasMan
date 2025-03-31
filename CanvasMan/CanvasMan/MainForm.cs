@@ -18,6 +18,7 @@ namespace CanvasMan
 			SubscribeToLogger();  // Subscribe to log events
 			InitializeCanvas();
 			InitializeTools();
+			CreateColorSelectorPanel();
 		}
 
 		private void InitializeCanvas() {
@@ -42,6 +43,64 @@ namespace CanvasMan
 
 			stateManager = new StateManager();
 			stateManager.SaveState(canvasBitmap);
+		}
+
+		private readonly Color[] basePalette = new Color[]
+{
+	Color.Red, Color.Green, Color.Blue, Color.Yellow,
+	Color.Cyan, Color.Magenta, Color.Black, Color.White,
+	Color.Gray, Color.Orange, Color.Purple, Color.Brown
+};
+
+		private void CreatePalettePanel() {
+			var palettePanel = new FlowLayoutPanel();
+			palettePanel.Dock = DockStyle.Top;
+
+			foreach (var color in basePalette) {
+				var button = new Button
+				{
+					BackColor = color,
+					Width = 30,
+					Height = 30,
+					Margin = new Padding(5)
+				};
+				button.Click += (sender, e) => colourManager.CurrentColor = color;
+				palettePanel.Controls.Add(button);
+			}
+
+			this.Controls.Add(palettePanel); // Add the panel to your form
+		}
+		private void CreateCustomColorButton() {
+			var customColorButton = new Button
+			{
+				Text = "Custom Color",
+				Width = 100,
+				Height = 30,
+				Margin = new Padding(10)
+			};
+			customColorButton.Click += (sender, e) =>
+			{
+				using (ColorDialog colorDialog = new ColorDialog()) {
+					if (colorDialog.ShowDialog() == DialogResult.OK) {
+						colourManager.CurrentColor = colorDialog.Color; // Set the selected custom color
+					}
+				}
+			};
+
+			this.Controls.Add(customColorButton); // Add the button to your form
+		}
+
+		private void CreateColorSelectorPanel() {
+			var colorSelectorPanel = new FlowLayoutPanel
+			{
+				Dock = DockStyle.Top,
+				AutoSize = true
+			};
+
+			CreatePalettePanel();  // Add base palette buttons
+			CreateCustomColorButton(); // Add the custom color button
+
+			this.Controls.Add(colorSelectorPanel); // Add the panel to your form
 		}
 
 		private void InitializeTools() {
