@@ -1,31 +1,46 @@
 using CanvasMan.Managers;
+using CanvasMan.Panels;
 using CanvasMan.Tools;
 
-namespace CanvasMan
-{
+namespace CanvasMan {
 	public partial class MainForm : Form {
 		private ToolManager toolManager;
 		private Bitmap canvasBitmap;
 		private Graphics canvasGraphics;
 		private DoubleBufferedPanel canvasPanel;
+		private ViewPortPanel viewportPanel;
 		private RichTextBox logRichTextBox; // Special control for displaying log messages
 		private StateManager stateManager;
 		private ColourManager colourManager;
-
 		public MainForm() {
 			InitializeComponent();
 			InitializeLoggerPanel();
 			SubscribeToLogger();  // Subscribe to log events
 			InitializeCanvas();
+			InitializeViewport();
 			InitializeTools();
 			CreateColorSelectorPanel();
+		}
+
+		private void InitializeViewport() {
+			// Create the viewport (DoubleBufferedPanel)
+			viewportPanel = new ViewPortPanel(canvasBitmap, canvasPanel)
+			{
+				Dock = DockStyle.Fill, // Fill the main form
+				BackColor = Color.Gray // Optional: distinguish it visually
+			};
+
+			// Add the panels (viewport contains canvasPanel)
+			//viewportPanel.Controls.Add(canvasPanel);
+			this.Controls.Add(viewportPanel);
+
 		}
 
 		private void InitializeCanvas() {
 			// Set up the canvas (panel with background image)
 			canvasBitmap = new Bitmap(800, 600);
 			canvasGraphics = Graphics.FromImage(canvasBitmap);
-			canvasGraphics.Clear(Color.Green); // Clear canvas to white
+			canvasGraphics.Clear(Color.White); // Clear canvas to white
 
 			canvasPanel = new DoubleBufferedPanel
 			{
@@ -39,7 +54,7 @@ namespace CanvasMan
 			canvasPanel.MouseDown += CanvasPanel_MouseDown;
 			canvasPanel.MouseMove += CanvasPanel_MouseMove;
 			canvasPanel.MouseUp += CanvasPanel_MouseUp;
-			this.Controls.Add(canvasPanel);
+			//this.Controls.Add(canvasPanel);
 
 			stateManager = new StateManager();
 			stateManager.SaveState(canvasBitmap);
@@ -139,7 +154,8 @@ namespace CanvasMan
 				Size = new Size(160, 600),
 				ReadOnly = true,
 				BackColor = Color.White,
-				Font = new Font("Consolas", 9)
+				Font = new Font("Consolas", 9),
+				Dock = DockStyle.Right
 			};
 
 			this.Controls.Add(logRichTextBox);
@@ -176,6 +192,7 @@ namespace CanvasMan
 
 		private void RefreshCanvas() {
 			this.Invalidate(); // Refresh the form to redraw the canvas
+			viewportPanel.Invalidate();
 			canvasPanel.Invalidate();
 		}
 
