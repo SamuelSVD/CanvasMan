@@ -64,6 +64,8 @@ namespace CanvasMan.Panels {
 				canvasOffset.X += e.X - dragStartPoint.X;
 				canvasOffset.Y += e.Y - dragStartPoint.Y;
 
+				CorrectCanvasOffset();
+
 				dragStartPoint = e.Location; // Update the drag start point
 
 				Invalidate(); // Redraw the panel
@@ -106,6 +108,20 @@ namespace CanvasMan.Panels {
 			float x = (mouseLocation.X - canvasOffset.X) / zoomFactor;
 			float y = (mouseLocation.Y - canvasOffset.Y) / zoomFactor;
 			return new Point((int)x, (int)y);
+		}
+		private void CorrectCanvasOffset() {
+			if (canvasOffset.X > canvasPanel.Width) {
+				canvasOffset.X = canvasPanel.Width;
+			}
+			if (canvasOffset.X < -canvasPanel.Width) {
+				canvasOffset.X = 0;
+			}
+			if (canvasOffset.Y > canvasPanel.Height) {
+				canvasOffset.Y = canvasPanel.Height;
+			}
+			if (canvasOffset.X < -canvasPanel.Height) {
+				canvasOffset.X = -canvasPanel.Height;
+			}
 		}
 	}
 }

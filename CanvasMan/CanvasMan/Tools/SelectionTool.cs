@@ -157,12 +157,31 @@ namespace CanvasMan.Tools {
 		// Copy and move the selected region (e.g., for CTRL + Arrow keys functionality)
 		public void CopyAndMoveSelection(Graphics graphics, int offsetX, int offsetY) {
 			if (!selectionRectangle.IsEmpty && selectedRegion != null) {
+				DrawCurrentState(graphics);
+				SaveCanvasBitmapState();
+				SaveStateCallback?.Invoke();
 				// Update the position of the selection rectangle
 				selectionRectangle.X += offsetX;
 				selectionRectangle.Y += offsetY;
 
 				// Draw the copied selection at the new position
-				graphics.DrawImage(selectedRegion, selectionRectangle);
+				isDraggingSelection = true;
+				DrawCurrentState(graphics);
+				isDraggingSelection = false;
+			}
+		}
+
+		// Copy and move the selected region (e.g., for CTRL + Arrow keys functionality)
+		public void MoveSelection(Graphics graphics, int offsetX, int offsetY) {
+			if (!selectionRectangle.IsEmpty && selectedRegion != null) {
+				// Update the position of the selection rectangle
+				selectionRectangle.X += offsetX;
+				selectionRectangle.Y += offsetY;
+
+				// Draw the copied selection at the new position
+				isDraggingSelection = true;
+				DrawCurrentState(graphics);
+				isDraggingSelection = false;
 			}
 		}
 

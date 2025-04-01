@@ -14,8 +14,8 @@ namespace CanvasMan {
 		private ColourManager colourManager;
 		public MainForm() {
 			InitializeComponent();
-			InitializeLoggerPanel();
-			SubscribeToLogger();  // Subscribe to log events
+			//InitializeLoggerPanel();
+			//SubscribeToLogger();  // Subscribe to log events
 			InitializeCanvas();
 			InitializeViewport();
 			InitializeTools();
@@ -29,11 +29,11 @@ namespace CanvasMan {
 				Dock = DockStyle.Fill, // Fill the main form
 				BackColor = Color.Gray // Optional: distinguish it visually
 			};
+			viewportPanel.PreviewKeyDown += MainForm_PreviewKeyDown;
 
 			// Add the panels (viewport contains canvasPanel)
 			//viewportPanel.Controls.Add(canvasPanel);
 			this.Controls.Add(viewportPanel);
-
 		}
 
 		private void InitializeCanvas() {
@@ -54,7 +54,7 @@ namespace CanvasMan {
 			canvasPanel.MouseDown += CanvasPanel_MouseDown;
 			canvasPanel.MouseMove += CanvasPanel_MouseMove;
 			canvasPanel.MouseUp += CanvasPanel_MouseUp;
-			//this.Controls.Add(canvasPanel);
+			canvasPanel.PreviewKeyDown += MainForm_PreviewKeyDown;
 
 			stateManager = new StateManager();
 			stateManager.SaveState(canvasBitmap);
@@ -212,28 +212,29 @@ namespace CanvasMan {
 
 			// Handle CTRL + Arrow keys for duplicating and moving selection
 			if (toolManager.ActiveTool is SelectionTool selectionTool) {
+				int offsetX = 0, offsetY = 0;
+
+				switch (e.KeyCode) {
+					case Keys.Up:
+						offsetY = -1; // Move up
+						break;
+					case Keys.Down:
+						offsetY = 1; // Move down
+						break;
+					case Keys.Left:
+						offsetX = -1; // Move left
+						break;
+					case Keys.Right:
+						offsetX = 1; // Move right
+						break;
+				}
 				if (e.Control) {
-					int offsetX = 0, offsetY = 0;
-
-					switch (e.KeyCode) {
-						case Keys.Up:
-							offsetY = -10; // Move up
-							break;
-						case Keys.Down:
-							offsetY = 10; // Move down
-							break;
-						case Keys.Left:
-							offsetX = -10; // Move left
-							break;
-						case Keys.Right:
-							offsetX = 10; // Move right
-							break;
-					}
-
 					// Copy and move the selection
 					selectionTool.CopyAndMoveSelection(canvasGraphics, offsetX, offsetY);
-					RefreshCanvas();
+				} else {
+					selectionTool.MoveSelection(canvasGraphics, offsetX, offsetY);
 				}
+				RefreshCanvas();
 			}
 		}
 
@@ -261,6 +262,61 @@ namespace CanvasMan {
 			RefreshCanvas();
 			Logger.Log("Redo performed.");
 			Logger.Log($"{stateManager.UndoCount}, {stateManager.RedoCount}");
+		}
+
+		private void MainForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
+			if (e.KeyCode == Keys.Up) {
+				e.IsInputKey = true;
+			}
+			if (e.KeyCode == Keys.Down) {
+				e.IsInputKey = true;
+			}
+			if (e.KeyCode == Keys.Left) {
+				e.IsInputKey = true;
+			}
+			if (e.KeyCode == Keys.Right) {
+				e.IsInputKey = true;
+			}
+		}
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+			// Handle CTRL + Arrow keys for duplicating and moving selection
+			if (toolManager.ActiveTool is SelectionTool selectionTool) {
+				int offsetX = 0, offsetY = 0;
+
+				switch (keyData) {
+					case Keys.Up:
+						offsetY = -1; // Move up
+						break;
+					case Keys.Down:
+						offsetY = 1; // Move down
+						break;
+					case Keys.Left:
+						offsetX = -1; // Move left
+						break;
+					case Keys.Right:
+						offsetX = 1; // Move right
+						break;
+				}
+				selectionTool.MoveSelection(canvasGraphics, offsetX, offsetY);
+				RefreshCanvas();
+			}
+			//capture up arrow key
+			if (keyData == Keys.Up) {
+				return true;
+			}
+			//capture down arrow key
+			if (keyData == Keys.Down) {
+				return true;
+			}
+			//capture left arrow key
+			if (keyData == Keys.Left) {
+				return true;
+			}
+			//capture right arrow key
+			if (keyData == Keys.Right) {
+				return true;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
 	}
 }
