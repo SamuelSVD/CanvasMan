@@ -66,5 +66,21 @@ namespace CanvasMan {
 				graphics.DrawRectangle(pen, x, y, width, height);
 			}
 		}
+
+		protected override void ClearToolState() {
+			throw new NotImplementedException();
+		}
+
+		protected override void StartToolDefinition(MouseEventArgs e) {
+			throw new NotImplementedException();
+		}
+
+		protected override void EndToolDefinition(MouseEventArgs e, Graphics graphics) {
+			throw new NotImplementedException();
+		}
+
+		protected override void DrawCurrentState(Graphics graphics) {
+			throw new NotImplementedException();
+		}
 	}
 }

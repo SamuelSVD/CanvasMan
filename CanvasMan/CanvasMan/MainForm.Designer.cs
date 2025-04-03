@@ -36,6 +36,8 @@
 			undoToolStripMenuItem = new ToolStripMenuItem();
 			redoToolStripMenuItem = new ToolStripMenuItem();
 			toolsMenu = new ToolStripMenuItem();
+			rectangleToolStripMenuItem = new ToolStripMenuItem();
+			arrowToolStripMenuItem = new ToolStripMenuItem();
 			menuStrip.SuspendLayout();
 			SuspendLayout();
 			// 
@@ -45,34 +47,34 @@
 			menuStrip.Items.AddRange(new ToolStripItem[] { toolsToolStripMenuItem, editToolStripMenuItem });
 			menuStrip.Location = new Point(0, 0);
 			menuStrip.Name = "menuStrip";
-			menuStrip.Size = new Size(974, 40);
+			menuStrip.Size = new Size(974, 42);
 			menuStrip.TabIndex = 0;
 			// 
 			// toolsToolStripMenuItem
 			// 
-			toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { brushToolToolStripMenuItem, fillToolToolStripMenuItem, selectToolStripMenuItem });
+			toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { brushToolToolStripMenuItem, fillToolToolStripMenuItem, selectToolStripMenuItem, rectangleToolStripMenuItem, arrowToolStripMenuItem });
 			toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			toolsToolStripMenuItem.Size = new Size(89, 36);
+			toolsToolStripMenuItem.Size = new Size(89, 38);
 			toolsToolStripMenuItem.Text = "Tools";
 			// 
 			// brushToolToolStripMenuItem
 			// 
 			brushToolToolStripMenuItem.Name = "brushToolToolStripMenuItem";
-			brushToolToolStripMenuItem.Size = new Size(211, 44);
+			brushToolToolStripMenuItem.Size = new Size(359, 44);
 			brushToolToolStripMenuItem.Text = "Brush";
 			brushToolToolStripMenuItem.Click += brushToolStripMenuItem_Click;
 			// 
 			// fillToolToolStripMenuItem
 			// 
 			fillToolToolStripMenuItem.Name = "fillToolToolStripMenuItem";
-			fillToolToolStripMenuItem.Size = new Size(211, 44);
+			fillToolToolStripMenuItem.Size = new Size(359, 44);
 			fillToolToolStripMenuItem.Text = "Fill";
 			fillToolToolStripMenuItem.Click += fillToolStripMenuItem_Click;
 			// 
 			// selectToolStripMenuItem
 			// 
 			selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-			selectToolStripMenuItem.Size = new Size(211, 44);
+			selectToolStripMenuItem.Size = new Size(359, 44);
 			selectToolStripMenuItem.Text = "Select";
 			selectToolStripMenuItem.Click += selectToolStripMenuItem_Click;
 			// 
@@ -80,7 +82,7 @@
 			// 
 			editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { undoToolStripMenuItem, redoToolStripMenuItem });
 			editToolStripMenuItem.Name = "editToolStripMenuItem";
-			editToolStripMenuItem.Size = new Size(74, 36);
+			editToolStripMenuItem.Size = new Size(74, 38);
 			editToolStripMenuItem.Text = "Edit";
 			// 
 			// undoToolStripMenuItem
@@ -102,6 +104,20 @@
 			toolsMenu.Name = "toolsMenu";
 			toolsMenu.Size = new Size(32, 19);
 			toolsMenu.Text = "Tools";
+			// 
+			// rectangleToolStripMenuItem
+			// 
+			rectangleToolStripMenuItem.Name = "rectangleToolStripMenuItem";
+			rectangleToolStripMenuItem.Size = new Size(359, 44);
+			rectangleToolStripMenuItem.Text = "Rectangle";
+			rectangleToolStripMenuItem.Click += rectangleToolStripMenuItem_Click;
+			// 
+			// arrowToolStripMenuItem
+			// 
+			arrowToolStripMenuItem.Name = "arrowToolStripMenuItem";
+			arrowToolStripMenuItem.Size = new Size(359, 44);
+			arrowToolStripMenuItem.Text = "Arrow";
+			arrowToolStripMenuItem.Click += arrowToolStripMenuItem_Click;
 			// 
 			// MainForm
 			// 
@@ -130,5 +146,7 @@
 		private ToolStripMenuItem editToolStripMenuItem;
 		private ToolStripMenuItem undoToolStripMenuItem;
 		private ToolStripMenuItem redoToolStripMenuItem;
+		private ToolStripMenuItem rectangleToolStripMenuItem;
+		private ToolStripMenuItem arrowToolStripMenuItem;
 	}
 }

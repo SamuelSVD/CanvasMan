@@ -132,15 +132,23 @@ namespace CanvasMan {
 			fillTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
 			var selectionTool = new SelectionTool(colourManager, "Select");
 			selectionTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
+			var rectangleTool = new RectangleTool(colourManager, "Rectangle");
+			rectangleTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
+			var arrowTool = new ArrowTool(colourManager, "Arrow");
+			arrowTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
 
 			// Pass the canvas bitmap tools as needed
 			selectionTool.SetCanvasBitmap(canvasBitmap);
 			fillTool.SetCanvasBitmap(canvasBitmap);
+			rectangleTool.SetCanvasBitmap(canvasBitmap);
+			arrowTool.SetCanvasBitmap(canvasBitmap);
 
 			// Add tools to the ToolManager
 			toolManager.AddTool(brushTool);
 			toolManager.AddTool(fillTool);
 			toolManager.AddTool(selectionTool);
+			toolManager.AddTool(rectangleTool);
+			toolManager.AddTool(arrowTool);
 
 			// Activate the default tool
 			toolManager.ActivateTool("Brush");
@@ -317,6 +325,14 @@ namespace CanvasMan {
 				return true;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void rectangleToolStripMenuItem_Click(object sender, EventArgs e) {
+			toolManager.ActivateTool("Rectangle");
+		}
+
+		private void arrowToolStripMenuItem_Click(object sender, EventArgs e) {
+			toolManager.ActivateTool("Arrow");
 		}
 	}
 }
