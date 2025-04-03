@@ -89,28 +89,56 @@ namespace CanvasMan.Panels {
 			}
 		}
 
+		//private void ViewPortPanel_MouseWheel(object sender, MouseEventArgs e) {
+		//	if (ModifierKeys == Keys.Control) // Check if CTRL is held
+		//	{
+		//		float zoomDelta = e.Delta > 0 ? 0.1f : -0.1f;
+		//		zoomFactor = Math.Max(0.1f, zoomFactor + zoomDelta); // Clamp the zoom level
+
+		//		// Adjust canvas offset to keep the zoom centered on the mouse position
+		//		var mousePos = e.Location;
+		//		canvasOffset.X -= mousePos.X * zoomDelta / zoomFactor;
+		//		canvasOffset.Y -= mousePos.Y * zoomDelta / zoomFactor;
+
+		//		Invalidate(); // Redraw the panel
+		//	}
+		//}
 		private void ViewPortPanel_MouseWheel(object sender, MouseEventArgs e) {
-			if (ModifierKeys == Keys.Control) // Check if CTRL is held
+			if (ModifierKeys == Keys.Control) // Ensure CTRL is held for zooming
 			{
-				float zoomDelta = e.Delta > 0 ? 0.1f : -0.1f;
-				zoomFactor = Math.Max(0.1f, zoomFactor + zoomDelta); // Clamp the zoom level
-
-				// Adjust canvas offset to keep the zoom centered on the mouse position
-				var mousePos = e.Location;
-				canvasOffset.X -= mousePos.X * zoomDelta / zoomFactor;
-				canvasOffset.Y -= mousePos.Y * zoomDelta / zoomFactor;
-
-				Invalidate(); // Redraw the panel
+				float zoomDelta = (e.Delta > 0) ? 0.1f : -0.1f;
+				AdjustCanvasOffsetOnZoom(e.Location, zoomDelta);
 			}
 		}
+
 		private Point TransformMousePoint(Point mouseLocation) {
 			// Adjust for canvasOffset and zoomFactor
 			float x = (mouseLocation.X - canvasOffset.X) / zoomFactor;
 			float y = (mouseLocation.Y - canvasOffset.Y) / zoomFactor;
 			return new Point((int)x, (int)y);
 		}
+		private PointF GetMousePositionRelativeToCanvas(Point mouseLocation) {
+			// Convert mouse coordinates to canvas coordinates
+			float relativeX = (mouseLocation.X - canvasOffset.X) / zoomFactor;
+			float relativeY = (mouseLocation.Y - canvasOffset.Y) / zoomFactor;
+
+			return new PointF(relativeX, relativeY);
+		}
+		private void AdjustCanvasOffsetOnZoom(Point mouseLocation, float zoomDelta) {
+			// Get the mouse position before zooming
+			PointF relativePosition = GetMousePositionRelativeToCanvas(mouseLocation);
+
+			// Apply zoom adjustment
+			zoomFactor = Math.Max(0.1f, zoomFactor + zoomDelta); // Prevent zoom factor from going too low
+
+			// Calculate new offset to maintain cursor position
+			canvasOffset.X = mouseLocation.X - (relativePosition.X * zoomFactor);
+			canvasOffset.Y = mouseLocation.Y - (relativePosition.Y * zoomFactor);
+
+			Invalidate(); // Redraw viewport
+		}
 		private void CorrectCanvasOffset() {
-			if (canvasOffset.X > canvasPanel.Width) {
+			/*if (canvasOffset.X > canvasPanel.Width) {
 				canvasOffset.X = canvasPanel.Width;
 			}
 			if (canvasOffset.X < -canvasPanel.Width) {
@@ -121,7 +149,7 @@ namespace CanvasMan.Panels {
 			}
 			if (canvasOffset.X < -canvasPanel.Height) {
 				canvasOffset.X = -canvasPanel.Height;
-			}
+			}*/
 		}
 	}
 }
