@@ -7,6 +7,7 @@ using System.Windows.Forms;
 namespace CanvasMan.Managers {
 	public class ToolManager {
 		private readonly Dictionary<string, Tool> tools; // Stores all tools by name
+		public Action? RefreshCanvasCallback { get; set; }
 		public Tool ActiveTool { get; private set; }     // The currently active tool
 
 		// Constructor to initialize the ToolManager
@@ -19,6 +20,7 @@ namespace CanvasMan.Managers {
 		public void AddTool(Tool tool) {
 			if (!tools.ContainsKey(tool.Name)) {
 				tools.Add(tool.Name, tool);
+				tool.RefreshCanvasCallback = () => RefreshCanvasCallback?.Invoke();
 			}
 		}
 

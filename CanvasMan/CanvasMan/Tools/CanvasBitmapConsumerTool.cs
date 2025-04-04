@@ -19,7 +19,16 @@ namespace CanvasMan.Tools {
 		protected Point initialDragPoint = Point.Empty;         // Stores the starting point of a drag operation
 
 		public CanvasBitmapConsumerTool(ColourManager colourManager, string name) : base(colourManager, name) {
+			colourManager.ColorChanged += ColourManager_ColorChanged;
 		}
+
+		private void ColourManager_ColorChanged(Color obj) {
+			if (IsActive && canvasBitmap is not null) {
+				DrawCurrentState(Graphics.FromImage(canvasBitmap));
+				RefreshCanvasCallback?.Invoke();
+			}
+		}
+
 		// Set the canvas bitmap (required for handling selections)
 		public void SetCanvasBitmap(Bitmap canvas) {
 			canvasBitmap = canvas;

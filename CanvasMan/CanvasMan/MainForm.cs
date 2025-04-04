@@ -124,6 +124,7 @@ namespace CanvasMan {
 			colourManager = new ColourManager();
 			// Initialize the tool manager
 			toolManager = new ToolManager();
+			toolManager.RefreshCanvasCallback = () => RefreshCanvas();
 
 			// Add tools
 			var brushTool = new BrushTool(colourManager, "Brush", 5);

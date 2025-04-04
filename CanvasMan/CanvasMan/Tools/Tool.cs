@@ -10,6 +10,7 @@ namespace CanvasMan.Tools {
 
 		// Callback delegate to trigger saving state.
 		public Action ? SaveStateCallback { get; set; }
+		public Action? RefreshCanvasCallback { get; set; }
 
 		protected ColourManager ColourManager;
 		// Constructor to initialize the tool's name
