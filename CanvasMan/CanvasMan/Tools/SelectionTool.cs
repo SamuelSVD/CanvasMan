@@ -28,10 +28,8 @@ namespace CanvasMan.Tools {
 					initialDragPoint = e.Location;
 				} else {
 					// Commit the dragged location and clear the selection
-					DrawCurrentState(graphics);
-					SaveCanvasBitmapState();
+					CommitTool(graphics);
 					ClearToolState();
-					SaveStateCallback?.Invoke();
 
 					// Initial press, start defining the 
 					StartToolDefinition(e);
@@ -77,7 +75,7 @@ namespace CanvasMan.Tools {
 				DrawCurrentState(graphics);
 			}
 		}
-		protected override void DrawCurrentState(Graphics graphics) {
+		public override void DrawCurrentState(Graphics graphics) {
 			graphics.Clear(Color.White);
 			graphics.DrawImage(originalCanvasBitmap, 0, 0);
 			if (isToolDefined) graphics.DrawImage(selectedRegion, selectionRectangle.X, selectionRectangle.Y);
@@ -108,9 +106,7 @@ namespace CanvasMan.Tools {
 		// Copy and move the selected region (e.g., for CTRL + Arrow keys functionality)
 		public void CopyAndMoveSelection(Graphics graphics, int offsetX, int offsetY) {
 			if (isToolDefined) {
-				DrawCurrentState(graphics);
-				SaveCanvasBitmapState();
-				SaveStateCallback?.Invoke();
+				CommitTool(graphics);
 				// Update the position of the selection rectangle
 				selectionRectangle.X += offsetX;
 				selectionRectangle.Y += offsetY;
@@ -168,20 +164,20 @@ namespace CanvasMan.Tools {
 			// Optional: Add any logic needed when a key is released
 		}
 
-		protected override void ClearToolState() {
+		public override void ClearToolState() {
 			isDefiningTool = false;
 			isDraggingTool = false;
 			isToolDefined = false;
 			selectedRegion = null;
 		}
 
-		protected override void StartToolDefinition(MouseEventArgs e) {
+		public override void StartToolDefinition(MouseEventArgs e) {
 			isDefiningTool = true;
 			initialDragPoint = e.Location;
 			selectionRectangle = new Rectangle(e.Location, Size.Empty);
 		}
 
-		protected override void EndToolDefinition(MouseEventArgs e, Graphics graphics) {
+		public override void EndToolDefinition(MouseEventArgs e, Graphics graphics) {
 			isDefiningTool = false;
 			if (!selectionRectangle.IsEmpty) {
 				if (selectionRectangle.X < 0) {

@@ -151,7 +151,7 @@ namespace CanvasMan {
 			toolManager.AddTool(arrowTool);
 
 			// Activate the default tool
-			toolManager.ActivateTool("Brush");
+			toolManager.ActivateTool("Brush", canvasGraphics);
 		}
 
 		private void InitializeLoggerPanel() {
@@ -207,6 +207,8 @@ namespace CanvasMan {
 		private void MainForm_KeyDown(object sender, KeyEventArgs e) {
 			// Check for CTRL+Z for Undo
 			if (e.Control && e.KeyCode == Keys.Z) {
+				toolManager.CommitTool(canvasGraphics);
+				toolManager.ClearToolState();
 				undoToolStripMenuItem_Click(sender, e);
 				e.Handled = true; // Mark the event as handled.
 				return;
@@ -247,15 +249,15 @@ namespace CanvasMan {
 		}
 
 		private void brushToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Brush");
+			toolManager.ActivateTool("Brush", canvasGraphics);
 		}
 
 		private void fillToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Fill");
+			toolManager.ActivateTool("Fill", canvasGraphics);
 		}
 
 		private void selectToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Select");
+			toolManager.ActivateTool("Select", canvasGraphics);
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -328,11 +330,11 @@ namespace CanvasMan {
 		}
 
 		private void rectangleToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Rectangle");
+			toolManager.ActivateTool("Rectangle", canvasGraphics);
 		}
 
 		private void arrowToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Arrow");
+			toolManager.ActivateTool("Arrow", canvasGraphics);
 		}
 	}
 }

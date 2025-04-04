@@ -23,10 +23,10 @@ namespace CanvasMan.Managers {
 		}
 
 		// Remove a tool by name
-		public void RemoveTool(string toolName) {
+		public void RemoveTool(string toolName, Graphics graphics) {
 			if (tools.ContainsKey(toolName)) {
 				if (ActiveTool?.Name == toolName) {
-					ActiveTool.Deactivate(); // Deactivate if it’s the active tool
+					ActiveTool.Deactivate(graphics); // Deactivate if it’s the active tool
 					ActiveTool = null;
 				}
 				tools.Remove(toolName);
@@ -34,14 +34,14 @@ namespace CanvasMan.Managers {
 		}
 
 		// Activate a tool by its name
-		public void ActivateTool(string toolName) {
+		public void ActivateTool(string toolName, Graphics graphics) {
 			if (tools.ContainsKey(toolName)) {
 				// Deactivate the currently active tool, if any
-				ActiveTool?.Deactivate();
+				ActiveTool?.Deactivate(graphics);
 
 				// Set the new active tool and activate it
 				ActiveTool = tools[toolName];
-				ActiveTool.Activate();
+				ActiveTool.Activate(graphics);
 			}
 		}
 
@@ -69,6 +69,17 @@ namespace CanvasMan.Managers {
 		public void HandleKeyUp(KeyEventArgs e, Graphics graphics) {
 			if (ActiveTool is IKeyInteractiveTool keyInteractiveTool) {
 				keyInteractiveTool.OnKeyUp(e, graphics);
+			}
+		}
+
+		internal void CommitTool(Graphics graphics) {
+			if (ActiveTool is ICommitableTool commitableTool) {
+				commitableTool.CommitTool(graphics);
+			}
+		}
+		internal void ClearToolState() {
+			if (ActiveTool is IBasicStateControlTool basicStateControlTool) {
+				basicStateControlTool.ClearToolState();
 			}
 		}
 	}

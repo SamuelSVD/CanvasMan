@@ -96,6 +96,8 @@ namespace CanvasMan.Tools {
 			bitmap.UnlockBits(bmpData);
 		}
 
+		public override void OnActivate(Graphics graphics) { }
 
+		public override void OnDeactivate(Graphics graphics) { }
 	}
 }

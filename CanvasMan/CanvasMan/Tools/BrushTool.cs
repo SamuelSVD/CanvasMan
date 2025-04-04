@@ -7,7 +7,7 @@ namespace CanvasMan.Tools {
 		public int BrushSize { get; set; } // The size (width) of the brush
 
         private Point? lastPoint = null; // Store the last drawn mouse position as a nullable Point.
-
+		private bool isDragging = false;
 		// Constructor to initialize the brush tool
 		public BrushTool(ColourManager colourManager, string name = "Brush", int size = 5) : base(colourManager, name) {
 			BrushSize = size;
@@ -23,6 +23,7 @@ namespace CanvasMan.Tools {
 					graphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
 				}
 			}
+			isDragging = true;
 		}
 
 		// Handle the mouse move event (for continuous strokes)
@@ -42,7 +43,17 @@ namespace CanvasMan.Tools {
 		// Handle the mouse up event (no specific behavior needed here for the brush)
 		public override void OnMouseUp(MouseEventArgs e, Graphics graphics) {
 			// BrushTool doesn't need to do anything special on mouse release
+			isDragging = false;
 			SaveStateCallback?.Invoke();
+		}
+
+		public override void OnActivate(Graphics graphics) {}
+
+		public override void OnDeactivate(Graphics graphics) {
+			if (isDragging) {
+				SaveStateCallback?.Invoke();
+			}
+			isDragging = false;
 		}
 	}
 }

@@ -20,14 +20,18 @@ namespace CanvasMan.Tools {
 		}
 
 		// Methods to activate or deactivate the tool
-		public virtual void Activate() {
+		public virtual void Activate(Graphics graphics) {
 			IsActive = true;
+			OnActivate(graphics);
 		}
 
-		public virtual void Deactivate() {
+		public virtual void Deactivate(Graphics graphics) {
 			IsActive = false;
+			OnDeactivate(graphics);
 		}
 
+		public abstract void OnActivate(Graphics graphics);
+		public abstract void OnDeactivate(Graphics graphics);
 		// Abstract methods for handling mouse events
 		// These must be overridden in derived tool classes
 		public abstract void OnMouseDown(MouseEventArgs e, Graphics graphics);
