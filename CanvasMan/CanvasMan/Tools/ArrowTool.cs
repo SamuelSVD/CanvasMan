@@ -47,8 +47,26 @@ namespace CanvasMan.Tools {
 				SaveCanvasBitmapState();
 			}
 		}
+		private bool isHoveringOverArrow; // Tracks if we're hovering over the arrow
 
+		private void UpdateCursor(Point mousePosition) {
+			if (IsNearPoint(mousePosition, startPoint) || IsNearPoint(mousePosition, endPoint)) {
+				// Hovering over an endpoint
+				Cursor.Current = Cursors.Cross; // Or any cursor to indicate endpoint dragging
+				isHoveringOverArrow = false;
+			} else if (IsNearLine(mousePosition, startPoint, endPoint)) {
+				// Hovering over the arrow line
+				Cursor.Current = Cursors.SizeAll; // Standard "move" cursor
+				isHoveringOverArrow = true;
+			} else {
+				// Not hovering over the arrow
+				Cursor.Current = Cursors.Default;
+				isHoveringOverArrow = false;
+			}
+		}
 		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) {
+			UpdateCursor(e.Location);
+
 			if (isDraggingTool) {
 				// Move the entire arrow by offsetting both points
 				int dx = e.Location.X - initialDragPoint.X;
