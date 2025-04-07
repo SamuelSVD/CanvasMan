@@ -1,5 +1,6 @@
 ﻿using CanvasMan.Interfaces;
 using CanvasMan.Managers;
+using CanvasMan.Tools.Abstract;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -8,6 +9,7 @@ namespace CanvasMan.Tools {
 		private Bitmap ? selectedRegion;        // Stores the image data of the selected region
 		private Rectangle selectionRectangle; // Defines the selected area
 		private Point initialSelectionRectanglePosition;
+		private bool isDraggingTool = false;
 
 		// Constructor to initialize the Select Tool
 		public SelectionTool(ColourManager colourManager, string name = "Select") : base(colourManager, name) {

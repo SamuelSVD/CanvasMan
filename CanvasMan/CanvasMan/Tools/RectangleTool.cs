@@ -1,5 +1,6 @@
 ﻿using CanvasMan.Managers;
-using CanvasMan.Tools;
+using CanvasMan.Tools.Abstract;
+using CanvasMan.Utils;
 using System.Drawing;
 using System.Net;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace CanvasMan {
 		private Point initialEndPoint = Point.Empty;
 		private bool isDraggingStart = false;
 		private bool isDraggingEnd = false;
+		private bool isDraggingTool = false;
 		public int BorderWidth { get; set; }       // Width of the rectangle border
 		public RectangleTool(ColourManager colourManager, string name, int borderWidth = 1) : base(colourManager, name) {
 			BorderWidth = borderWidth;
@@ -26,15 +28,15 @@ namespace CanvasMan {
 				OnMouseUp(e, graphics);
 			} else if (isToolDefined) {
 				// Check if the user clicked near an endpoint or on the arrow line
-				if (IsNearPoint(e.Location, startPoint)) {
+				if (ControlUtils.IsNearPoint(e.Location, startPoint, 5)) {
 					isDraggingStart = true;
-				} else if (IsNearPoint(e.Location, endPoint)) {
+				} else if (ControlUtils.IsNearPoint(e.Location, endPoint, 5)) {
 					isDraggingEnd = true;
 				} else if (
-					IsNearLine(e.Location, startPoint, new Point(startPoint.X, endPoint.Y)) ||
-					IsNearLine(e.Location, startPoint, new Point(endPoint.X, startPoint.Y)) ||
-					IsNearLine(e.Location, endPoint, new Point(startPoint.X, endPoint.Y)) ||
-					IsNearLine(e.Location, endPoint, new Point(endPoint.X, startPoint.Y))
+					ControlUtils.IsNearLine(e.Location, startPoint, new Point(startPoint.X, endPoint.Y), 5) ||
+					ControlUtils.IsNearLine(e.Location, startPoint, new Point(endPoint.X, startPoint.Y), 5) ||
+					ControlUtils.IsNearLine(e.Location, endPoint, new Point(startPoint.X, endPoint.Y), 5) ||
+					ControlUtils.IsNearLine(e.Location, endPoint, new Point(endPoint.X, startPoint.Y), 5)
 				) {
 					isDraggingTool = true;
 					initialDragPoint = e.Location;

@@ -7,13 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasMan.Tools {
-	public abstract class CanvasBitmapConsumerTool: Tool, ICommitableTool, IBasicStateControlTool {
+namespace CanvasMan.Tools.Abstract {
+	public abstract class CanvasBitmapConsumerTool : Tool, ICommitableTool, IBasicStateControlTool {
 		private const int grabRadius = 8; // Area around endpoints to detect dragging
-		protected Bitmap ? canvasBitmap; // Reference to the canvas bitmap
-		protected Bitmap ? originalCanvasBitmap; // Reference to the canvas bitmap
+		protected Bitmap? canvasBitmap; // Reference to the canvas bitmap
+		protected Bitmap? originalCanvasBitmap; // Reference to the canvas bitmap
 		protected bool isDefiningTool = false;
-		protected bool isDraggingTool = false;
 		protected bool isToolDefined = false;
 		protected bool isToolChanged = false;
 		protected Point initialDragPoint = Point.Empty;         // Stores the starting point of a drag operation
@@ -59,23 +58,6 @@ namespace CanvasMan.Tools {
 				SaveStateCallback?.Invoke();
 				isToolChanged = false;
 			}
-		}
-
-		protected bool IsNearPoint(Point click, Point target) {
-			return Math.Abs(click.X - target.X) <= grabRadius &&
-				   Math.Abs(click.Y - target.Y) <= grabRadius;
-		}
-
-		protected bool IsNearLine(Point click, Point start, Point end) {
-			// Check if the point is close to the line
-			float distance = DistanceFromLine(click, start, end);
-			return distance < grabRadius;
-		}
-
-		protected float DistanceFromLine(Point p, Point a, Point b) {
-			float num = Math.Abs((b.Y - a.Y) * p.X - (b.X - a.X) * p.Y + b.X * a.Y - b.Y * a.X);
-			float denom = (float)Math.Sqrt(Math.Pow(b.Y - a.Y, 2) + Math.Pow(b.X - a.X, 2));
-			return num / denom;
 		}
 	}
 }

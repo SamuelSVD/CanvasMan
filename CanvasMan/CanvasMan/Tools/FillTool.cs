@@ -1,5 +1,5 @@
 ﻿using CanvasMan.Managers;
-using CanvasMan.Tools;
+using CanvasMan.Tools.Abstract;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;

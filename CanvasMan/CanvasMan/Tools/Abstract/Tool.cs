@@ -2,14 +2,14 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CanvasMan.Tools {
+namespace CanvasMan.Tools.Abstract {
 	public abstract class Tool {
 		// Common properties for all tools
 		public string Name { get; }
 		public bool IsActive { get; private set; }
 
 		// Callback delegate to trigger saving state.
-		public Action ? SaveStateCallback { get; set; }
+		public Action? SaveStateCallback { get; set; }
 		public Action? RefreshCanvasCallback { get; set; }
 
 		protected ColourManager ColourManager;

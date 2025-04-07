@@ -137,12 +137,15 @@ namespace CanvasMan {
 			rectangleTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
 			var arrowTool = new ArrowTool(colourManager, "Arrow");
 			arrowTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
+			var lineTool = new LineTool(colourManager, "Line");
+			lineTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
 
 			// Pass the canvas bitmap tools as needed
 			selectionTool.SetCanvasBitmap(canvasBitmap);
 			fillTool.SetCanvasBitmap(canvasBitmap);
 			rectangleTool.SetCanvasBitmap(canvasBitmap);
 			arrowTool.SetCanvasBitmap(canvasBitmap);
+			lineTool.SetCanvasBitmap(canvasBitmap);
 
 			// Add tools to the ToolManager
 			toolManager.AddTool(brushTool);
@@ -150,6 +153,7 @@ namespace CanvasMan {
 			toolManager.AddTool(selectionTool);
 			toolManager.AddTool(rectangleTool);
 			toolManager.AddTool(arrowTool);
+			toolManager.AddTool(lineTool);
 
 			// Activate the default tool
 			toolManager.ActivateTool("Brush", canvasGraphics);
@@ -259,6 +263,9 @@ namespace CanvasMan {
 
 		private void selectToolStripMenuItem_Click(object sender, EventArgs e) {
 			toolManager.ActivateTool("Select", canvasGraphics);
+		}
+		private void lineToolStripMenuItem_Click(object sender, EventArgs e) {
+			toolManager.ActivateTool("Line", canvasGraphics);
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
