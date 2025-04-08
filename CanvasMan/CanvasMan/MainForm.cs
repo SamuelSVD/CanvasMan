@@ -20,6 +20,7 @@ namespace CanvasMan {
 			InitializeViewport();
 			InitializeTools();
 			CreateColorSelectorPanel();
+			CreateBrushSizeSelector();
 		}
 
 		private void InitializeViewport() {
@@ -105,6 +106,36 @@ namespace CanvasMan {
 			this.Controls.Add(customColorButton); // Add the button to your form
 		}
 
+		private void CreateBrushSizeSelector() {
+			// Create label for brush size
+			Label brushSizeLabel = new Label
+			{
+				Text = "Brush Size:",
+				AutoSize = true,
+				Location = new Point(10, 10), Dock = DockStyle.Top
+			};
+			this.Controls.Add(brushSizeLabel);
+
+			// Create slider for brush size
+			TrackBar brushSizeSlider = new TrackBar
+			{
+				Minimum = 1,          // Minimum brush size
+				Maximum = 50,         // Maximum brush size
+				TickFrequency = 5,    // Intervals between ticks
+				Value = 10,           // Default brush size
+				Location = new Point(10, 40),
+				Width = 200,
+				Dock = DockStyle.Top
+			};
+			this.Controls.Add(brushSizeSlider);
+
+			// Brush size change event
+			brushSizeSlider.ValueChanged += (sender, e) =>
+			{
+				int newBrushSize = brushSizeSlider.Value;
+				toolManager.SetBrushSize(newBrushSize); // Pass the new size to the BrushTool
+			};
+		}
 		private void CreateColorSelectorPanel() {
 			var colorSelectorPanel = new FlowLayoutPanel
 			{

@@ -1,4 +1,5 @@
 ﻿using CanvasMan.Interfaces;
+using CanvasMan.Tools;
 using CanvasMan.Tools.Abstract;
 using System.Collections.Generic;
 using System.Drawing;
@@ -82,6 +83,12 @@ namespace CanvasMan.Managers {
 		internal void ClearToolState() {
 			if (ActiveTool is IBasicStateControlTool basicStateControlTool) {
 				basicStateControlTool.ClearToolState();
+			}
+		}
+
+		internal void SetBrushSize(int newBrushSize) {
+			if (ActiveTool is BrushTool bTool) {
+				bTool.BrushSize = newBrushSize;
 			}
 		}
 	}

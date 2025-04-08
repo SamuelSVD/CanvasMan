@@ -39,6 +39,9 @@ namespace CanvasMan.Panels {
 			e.Graphics.TranslateTransform(canvasOffset.X, canvasOffset.Y);
 			e.Graphics.ScaleTransform(zoomFactor, zoomFactor);
 
+			// Disable smoothing to maintain sharpness
+			e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+
 			// Draw the canvas image
 			if (canvasImage != null) {
 				e.Graphics.DrawImage(canvasImage, 0, 0);
@@ -106,7 +109,7 @@ namespace CanvasMan.Panels {
 		private void ViewPortPanel_MouseWheel(object sender, MouseEventArgs e) {
 			if (ModifierKeys == Keys.Control) // Ensure CTRL is held for zooming
 			{
-				float zoomDelta = (e.Delta > 0) ? 0.1f : -0.1f;
+				float zoomDelta = (e.Delta > 0) ? 0.2f : -0.2f;
 				AdjustCanvasOffsetOnZoom(e.Location, zoomDelta);
 			}
 		}

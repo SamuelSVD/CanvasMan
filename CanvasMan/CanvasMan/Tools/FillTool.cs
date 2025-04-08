@@ -22,6 +22,10 @@ namespace CanvasMan.Tools {
 			if (canvasBitmap != null && e.Button == MouseButtons.Left) {
 				// Perform the flood fill operation
 				Point clickPoint = new Point(e.X, e.Y);
+				if (clickPoint.X < 0) return;
+				if (clickPoint.Y < 0) return;
+				if (clickPoint.X > canvasBitmap.Width) return;
+				if (clickPoint.Y > canvasBitmap.Height) return;
 				Color targetColor = canvasBitmap.GetPixel(clickPoint.X, clickPoint.Y);
 
 				if (targetColor != ColourManager.CurrentColor) {
