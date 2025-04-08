@@ -32,7 +32,7 @@ namespace CanvasMan.Tools {
 
 		// Handle the mouse move event (for continuous strokes)
 		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) {
-			if (e.Button == MouseButtons.Left) {
+			if (e.Button == MouseButtons.Left && lastPoint is not null) {
 				using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
 					graphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
 				}
