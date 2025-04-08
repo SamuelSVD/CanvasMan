@@ -22,6 +22,9 @@ namespace CanvasMan.Tools {
 			if (e.Button == MouseButtons.Left) {
 				using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
 					graphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+					if (BrushSize == 1) {
+						graphics.FillRectangle(brush, e.X, e.Y, 1, 1);
+					}
 				}
 			}
 			isDragging = true;
