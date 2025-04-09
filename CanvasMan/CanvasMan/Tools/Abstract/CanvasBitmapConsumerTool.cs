@@ -21,7 +21,7 @@ namespace CanvasMan.Tools.Abstract {
 			colourManager.ColorChanged += ColourManager_ColorChanged;
 		}
 
-		private void ColourManager_ColorChanged(Color obj) {
+		private void ColourManager_ColorChanged() {
 			if (IsActive && canvasBitmap is not null) {
 				DrawCurrentState(Graphics.FromImage(canvasBitmap));
 				RefreshCanvasCallback?.Invoke();

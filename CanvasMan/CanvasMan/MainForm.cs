@@ -1,6 +1,8 @@
 using CanvasMan.Managers;
 using CanvasMan.Panels;
 using CanvasMan.Tools;
+using CanvasMan.UI;
+using System.Drawing;
 
 namespace CanvasMan {
 	public partial class MainForm : Form {
@@ -12,15 +14,18 @@ namespace CanvasMan {
 		private RichTextBox logRichTextBox; // Special control for displaying log messages
 		private StateManager stateManager;
 		private ColourManager colourManager;
+		private Ribbon ribbon;
 		public MainForm() {
 			InitializeComponent();
+			// Initialize the colour manager
+			colourManager = new ColourManager();
+
 			//InitializeLoggerPanel();
 			//SubscribeToLogger();  // Subscribe to log events
+			InitializeRibbon();
 			InitializeCanvas();
 			InitializeViewport();
 			InitializeTools();
-			CreateColorSelectorPanel();
-			CreateBrushSizeSelector();
 		}
 
 		private void InitializeViewport() {
@@ -68,33 +73,103 @@ namespace CanvasMan {
 	Color.Gray, Color.Orange, Color.Purple, Color.Brown
 };
 
-		private void CreatePalettePanel() {
-			var palettePanel = new FlowLayoutPanel();
-			palettePanel.Dock = DockStyle.Top;
 
+		private void InitializeRibbon() {
+			Ribbon ribbon = new Ribbon();
+
+			ribbon.AddTab("Home");
+			ribbon.AddGroupToTab("Home","Color Panel");
+			ribbon.AddGroupToTab("Home", "Tools");
+
+			var colorContent = new TableLayoutPanel()
+			{
+				Dock = DockStyle.Left,
+				AutoSize = true,
+				AutoSizeMode = AutoSizeMode.GrowOnly
+			};
+			var primaryColourButton = new Button
+			{
+				BackColor = Color.Black,
+				Width = 60,
+				Height = 60,
+				Margin = new Padding(2)
+			};
+			colourManager.ColorChanged += () =>
+			{
+				primaryColourButton.BackColor = colourManager.CurrentColor;
+			};
+			var label = new Label
+			{
+				Text = "Primary",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			colorContent.Controls.Add(primaryColourButton, 0, 0);
+			colorContent.Controls.Add(label, 0, 1);
+			Button secondaryColourButton = new Button
+			{
+				BackColor = Color.White,
+				Width = 60,
+				Height = 60,
+				Margin = new Padding(2)
+			};
+			colourManager.ColorChanged += () =>
+			{
+				secondaryColourButton.BackColor = colourManager.SecondaryColor;
+			};
+			label = new Label
+			{
+				Text = "Secondary",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			colorContent.Controls.Add(secondaryColourButton, 1, 0);
+			colorContent.Controls.Add(label, 1, 1);
+
+			var palettePanel = new TableLayoutPanel()
+			{
+				Dock = DockStyle.Top,
+				AutoSize = true,
+				AutoSizeMode = AutoSizeMode.GrowOnly
+			};
+			int i = 0, j = 0;
 			foreach (var color in basePalette) {
 				var button = new Button
 				{
 					BackColor = color,
 					Width = 30,
 					Height = 30,
-					Margin = new Padding(5)
+					Margin = new Padding(2)
 				};
-				button.Click += (sender, e) => colourManager.CurrentColor = color;
-				palettePanel.Controls.Add(button);
-			}
+				button.MouseUp += (sender, e) =>
+				{
 
-			this.Controls.Add(palettePanel); // Add the panel to your form
-		}
-		private void CreateCustomColorButton() {
-			var customColorButton = new Button
+					if (((MouseEventArgs)e).Button == MouseButtons.Left) {
+						colourManager.CurrentColor = color;
+					} else if (((MouseEventArgs)e).Button == MouseButtons.Right) {
+						colourManager.SecondaryColor = color;
+					}
+				};
+				palettePanel.Controls.Add(button, i, j);
+				i++;
+				if ( i >= 6) {
+					j++;
+					i = 0;
+				}
+			}
+			colorContent.Controls.Add(palettePanel, 2, 0);
+			colorContent.SetRowSpan(palettePanel, 2);
+			// Add controls to the "Color Panel" group
+			var colorPicker = new Button
 			{
-				Text = "Custom Color",
-				Width = 100,
-				Height = 30,
-				Margin = new Padding(10)
+				Text = "Pick Color",
+				Dock = DockStyle.Left,
+				AutoSize = true
 			};
-			customColorButton.Click += (sender, e) =>
+			colorContent.Controls.Add(colorPicker, 3, 0);
+			colorContent.SetRowSpan(colorPicker, 2);
+
+			colorPicker.Click += (sender, e) =>
 			{
 				using (ColorDialog colorDialog = new ColorDialog()) {
 					if (colorDialog.ShowDialog() == DialogResult.OK) {
@@ -103,19 +178,71 @@ namespace CanvasMan {
 				}
 			};
 
-			this.Controls.Add(customColorButton); // Add the button to your form
-		}
+			ribbon.AddControlToGroup("Color Panel", colorContent);
 
-		private void CreateBrushSizeSelector() {
+
+			var toolTableLayoutPanel = new TableLayoutPanel()
+			{
+				AutoSize = true,
+				Dock = DockStyle.Fill
+			};
+			ribbon.AddControlToGroup("Tools", toolTableLayoutPanel);
+			var selectButton = new Button
+			{
+				Text = "Select",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			selectButton.Click += selectToolStripMenuItem_Click;
+			var brushButton = new Button
+			{
+				Text = "Brush",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			brushButton.Click += brushToolStripMenuItem_Click;
+			var fillBucket = new Button
+			{
+				Text = "Fill",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			fillBucket.Click += fillToolStripMenuItem_Click;
+			var eraserButton = new Button
+			{
+				Text = "Eraser",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			var rectangleButton = new Button
+			{
+				Text = "Rectangle",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			rectangleButton.Click += rectangleToolStripMenuItem_Click;
+			var arrowButton = new Button
+			{
+				Text = "Arrow",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			arrowButton.Click += arrowToolStripMenuItem_Click;
+			var lineButton = new Button
+			{
+				Text = "Line",
+				AutoSize = true,
+				Dock = DockStyle.Top
+			};
+			lineButton.Click += lineToolStripMenuItem_Click;
 			// Create label for brush size
 			Label brushSizeLabel = new Label
 			{
 				Text = "Brush Size:",
 				AutoSize = true,
-				Location = new Point(10, 10), Dock = DockStyle.Top
+				Location = new Point(10, 10),
+				Dock = DockStyle.Top
 			};
-			this.Controls.Add(brushSizeLabel);
-
 			// Create slider for brush size
 			TrackBar brushSizeSlider = new TrackBar
 			{
@@ -127,32 +254,39 @@ namespace CanvasMan {
 				Width = 200,
 				Dock = DockStyle.Top
 			};
-			this.Controls.Add(brushSizeSlider);
-
 			// Brush size change event
 			brushSizeSlider.ValueChanged += (sender, e) =>
 			{
 				int newBrushSize = brushSizeSlider.Value;
 				toolManager.SetBrushSize(newBrushSize); // Pass the new size to the BrushTool
 			};
+
+			toolTableLayoutPanel.Controls.Add(selectButton, 0, 0);
+			toolTableLayoutPanel.Controls.Add(fillBucket, 1, 0);
+			toolTableLayoutPanel.Controls.Add(brushButton, 1, 1);
+			toolTableLayoutPanel.Controls.Add(eraserButton, 1, 2);
+			toolTableLayoutPanel.Controls.Add(rectangleButton, 2, 0);
+			toolTableLayoutPanel.Controls.Add(lineButton, 2, 1);
+			toolTableLayoutPanel.Controls.Add(arrowButton, 2, 2);
+			toolTableLayoutPanel.Controls.Add(brushSizeLabel, 3, 0);
+			toolTableLayoutPanel.Controls.Add(brushSizeSlider, 3, 1);
+
+			toolTableLayoutPanel.RowStyles.Add(new RowStyle());
+			toolTableLayoutPanel.RowStyles.Add(new RowStyle());
+			foreach (RowStyle rs in toolTableLayoutPanel.RowStyles) {
+				rs.SizeType = SizeType.Percent;
+				rs.Height = 33;
+			}
+			foreach (ColumnStyle cs in toolTableLayoutPanel.ColumnStyles) {
+				cs.SizeType = SizeType.Percent;
+				cs.Width = 100;
+			}
+
+			// Add the ribbon to the form
+			this.Controls.Add(ribbon);
 		}
-		private void CreateColorSelectorPanel() {
-			var colorSelectorPanel = new FlowLayoutPanel
-			{
-				Dock = DockStyle.Top,
-				AutoSize = true
-			};
-
-			CreatePalettePanel();  // Add base palette buttons
-			CreateCustomColorButton(); // Add the custom color button
-
-			this.Controls.Add(colorSelectorPanel); // Add the panel to your form
-		}
-
 		private void InitializeTools() {
 
-			// Initialize the colour manager
-			colourManager = new ColourManager();
 			// Initialize the tool manager
 			toolManager = new ToolManager();
 			toolManager.RefreshCanvasCallback = () => RefreshCanvas();

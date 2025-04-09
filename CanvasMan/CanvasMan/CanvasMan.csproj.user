@@ -10,5 +10,8 @@
     <Compile Update="Panels\ViewPortPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="UI\Ribbon.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
