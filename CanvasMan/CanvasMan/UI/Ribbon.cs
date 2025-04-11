@@ -26,7 +26,7 @@ namespace CanvasMan.UI {
 		public void AddTab(string tabName) {
 			var tabPage = new TabPage(tabName)
 			{
-				BackColor = Color.White
+				//BackColor = Color.Cyan,
 			};
 
 			this.TabPages.Add(tabPage);
@@ -45,7 +45,8 @@ namespace CanvasMan.UI {
 				Text = groupName,
 				Location = new Point(10, tabPage.Controls.Count * 90),
 				Dock = DockStyle.Left,
-				AutoSize = true
+				AutoSize = true,
+				//BackColor = Color.Gold
 			};
 
 			tabPage.Controls.Add(groupBox);
@@ -61,6 +62,23 @@ namespace CanvasMan.UI {
 
 			control.Location = new Point(groupBox.Controls.Count * 90, 20); // Positioning within group
 			groupBox.Controls.Add(control);
+		}
+		public void UpdateRibbonHeight() {
+			if (SelectedTab != null) // Check if a tab is selected
+			{
+				int requiredHeight = 0;
+
+				// Calculate the total height of the controls in the selected tab
+				foreach (Control control in SelectedTab.Controls) {
+					requiredHeight = Math.Max(requiredHeight, control.Bottom + control.Margin.Bottom);
+				}
+
+				// Add some padding for aesthetics
+				requiredHeight += 10;
+
+				// Update the ribbon height dynamically
+				Height = requiredHeight;
+			}
 		}
 	}
 }

@@ -73,14 +73,26 @@ namespace CanvasMan {
 	Color.Gray, Color.Orange, Color.Purple, Color.Brown
 };
 
-
 		private void InitializeRibbon() {
-			Ribbon ribbon = new Ribbon();
-
+			ribbon = new Ribbon();
 			ribbon.AddTab("Home");
-			ribbon.AddGroupToTab("Home","Color Panel");
+			ribbon.AddGroupToTab("Home", "Color Panel");
 			ribbon.AddGroupToTab("Home", "Tools");
 
+			CreateColorRibbonSection();
+			CreateToolsRibbonSection();
+			// Add the ribbon to the form
+			this.Controls.Add(ribbon);
+
+			// Hook into the SelectedIndexChanged event
+			ribbon.SelectedIndexChanged += (sender, e) => ribbon.UpdateRibbonHeight();
+
+			// Initial height adjustment
+			ribbon.UpdateRibbonHeight();
+		
+		}
+
+		private void CreateColorRibbonSection() {
 			var colorContent = new TableLayoutPanel()
 			{
 				Dock = DockStyle.Left,
@@ -92,7 +104,7 @@ namespace CanvasMan {
 				BackColor = Color.Black,
 				Width = 60,
 				Height = 60,
-				Margin = new Padding(2)
+				Margin = new Padding(2),
 			};
 			colourManager.ColorChanged += () =>
 			{
@@ -111,7 +123,7 @@ namespace CanvasMan {
 				BackColor = Color.White,
 				Width = 60,
 				Height = 60,
-				Margin = new Padding(2)
+				Margin = new Padding(2),
 			};
 			colourManager.ColorChanged += () =>
 			{
@@ -125,6 +137,23 @@ namespace CanvasMan {
 			};
 			colorContent.Controls.Add(secondaryColourButton, 1, 0);
 			colorContent.Controls.Add(label, 1, 1);
+
+			Button swapColourButton = new Button
+			{
+				BackColor = Color.White,
+				Margin = new Padding(2),
+				Text = "Swap",
+				Dock = DockStyle.Top,
+				AutoSize = true
+			};
+			swapColourButton.MouseUp += (sender, e) =>
+			{
+				var c = colourManager.CurrentColor;
+				colourManager.CurrentColor = colourManager.SecondaryColor;
+				colourManager.SecondaryColor = c;
+			};
+			colorContent.Controls.Add(swapColourButton, 0, 2);
+			colorContent.SetColumnSpan(swapColourButton, 2);
 
 			var palettePanel = new TableLayoutPanel()
 			{
@@ -152,7 +181,7 @@ namespace CanvasMan {
 				};
 				palettePanel.Controls.Add(button, i, j);
 				i++;
-				if ( i >= 6) {
+				if (i >= 6) {
 					j++;
 					i = 0;
 				}
@@ -163,12 +192,11 @@ namespace CanvasMan {
 			var colorPicker = new Button
 			{
 				Text = "Pick Color",
-				Dock = DockStyle.Left,
+				Dock = DockStyle.Top,
 				AutoSize = true
 			};
-			colorContent.Controls.Add(colorPicker, 3, 0);
-			colorContent.SetRowSpan(colorPicker, 2);
-
+			colorContent.Controls.Add(colorPicker, 2, 2);
+			
 			colorPicker.Click += (sender, e) =>
 			{
 				using (ColorDialog colorDialog = new ColorDialog()) {
@@ -179,62 +207,21 @@ namespace CanvasMan {
 			};
 
 			ribbon.AddControlToGroup("Color Panel", colorContent);
+		}
 
+		private void CreateToolsRibbonSection() {
+			// Create a drawing tools group
+			RibbonButtonGroup toolsGroup = new RibbonButtonGroup("Tools", 3);
+			ribbon.AddControlToGroup("Tools", toolsGroup);
 
-			var toolTableLayoutPanel = new TableLayoutPanel()
-			{
-				AutoSize = true,
-				Dock = DockStyle.Fill
-			};
-			ribbon.AddControlToGroup("Tools", toolTableLayoutPanel);
-			var selectButton = new Button
-			{
-				Text = "Select",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			selectButton.Click += selectToolStripMenuItem_Click;
-			var brushButton = new Button
-			{
-				Text = "Brush",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			brushButton.Click += brushToolStripMenuItem_Click;
-			var fillBucket = new Button
-			{
-				Text = "Fill",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			fillBucket.Click += fillToolStripMenuItem_Click;
-			var eraserButton = new Button
-			{
-				Text = "Eraser",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			var rectangleButton = new Button
-			{
-				Text = "Rectangle",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			rectangleButton.Click += rectangleToolStripMenuItem_Click;
-			var arrowButton = new Button
-			{
-				Text = "Arrow",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			arrowButton.Click += arrowToolStripMenuItem_Click;
-			var lineButton = new Button
-			{
-				Text = "Line",
-				AutoSize = true,
-				Dock = DockStyle.Top
-			};
-			lineButton.Click += lineToolStripMenuItem_Click;
+			toolsGroup.AddButton("Select", selectToolStripMenuItem_Click);
+			toolsGroup.AddButton("Brush", brushToolStripMenuItem_Click);
+			toolsGroup.AddButton("Fill", fillToolStripMenuItem_Click);
+			toolsGroup.AddButton("Eraser", (sender, e) => { });
+			toolsGroup.AddButton("Rectangle", rectangleToolStripMenuItem_Click);
+			toolsGroup.AddButton("Arrow", arrowToolStripMenuItem_Click);
+			toolsGroup.AddButton("Line", lineToolStripMenuItem_Click);
+			
 			// Create label for brush size
 			Label brushSizeLabel = new Label
 			{
@@ -261,29 +248,10 @@ namespace CanvasMan {
 				toolManager.SetBrushSize(newBrushSize); // Pass the new size to the BrushTool
 			};
 
-			toolTableLayoutPanel.Controls.Add(selectButton, 0, 0);
-			toolTableLayoutPanel.Controls.Add(fillBucket, 1, 0);
-			toolTableLayoutPanel.Controls.Add(brushButton, 1, 1);
-			toolTableLayoutPanel.Controls.Add(eraserButton, 1, 2);
-			toolTableLayoutPanel.Controls.Add(rectangleButton, 2, 0);
-			toolTableLayoutPanel.Controls.Add(lineButton, 2, 1);
-			toolTableLayoutPanel.Controls.Add(arrowButton, 2, 2);
-			toolTableLayoutPanel.Controls.Add(brushSizeLabel, 3, 0);
-			toolTableLayoutPanel.Controls.Add(brushSizeSlider, 3, 1);
+			//toolTableLayoutPanel.Controls.Add(brushSizeLabel, 3, 0);
+			//toolTableLayoutPanel.Controls.Add(brushSizeSlider, 3, 1);
 
-			toolTableLayoutPanel.RowStyles.Add(new RowStyle());
-			toolTableLayoutPanel.RowStyles.Add(new RowStyle());
-			foreach (RowStyle rs in toolTableLayoutPanel.RowStyles) {
-				rs.SizeType = SizeType.Percent;
-				rs.Height = 33;
-			}
-			foreach (ColumnStyle cs in toolTableLayoutPanel.ColumnStyles) {
-				cs.SizeType = SizeType.Percent;
-				cs.Width = 100;
-			}
 
-			// Add the ribbon to the form
-			this.Controls.Add(ribbon);
 		}
 		private void InitializeTools() {
 

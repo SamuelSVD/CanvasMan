@@ -13,5 +13,8 @@
     <Compile Update="UI\Ribbon.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="UI\RibbonButtonGroup.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
