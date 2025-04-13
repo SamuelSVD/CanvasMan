@@ -26,10 +26,10 @@ namespace CanvasMan.Managers {
 		}
 
 		// Remove a tool by name
-		public void RemoveTool(string toolName, Graphics graphics) {
+		public void RemoveTool(string toolName) {
 			if (tools.ContainsKey(toolName)) {
 				if (ActiveTool?.Name == toolName) {
-					ActiveTool.Deactivate(graphics); // Deactivate if it’s the active tool
+					ActiveTool.Deactivate(); // Deactivate if it’s the active tool
 					ActiveTool = null;
 				}
 				tools.Remove(toolName);
@@ -37,47 +37,47 @@ namespace CanvasMan.Managers {
 		}
 
 		// Activate a tool by its name
-		public void ActivateTool(string toolName, Graphics graphics) {
+		public void ActivateTool(string toolName) {
 			if (tools.ContainsKey(toolName)) {
 				// Deactivate the currently active tool, if any
-				ActiveTool?.Deactivate(graphics);
+				ActiveTool?.Deactivate();
 
 				// Set the new active tool and activate it
 				ActiveTool = tools[toolName];
-				ActiveTool.Activate(graphics);
+				ActiveTool.Activate();
 			}
 		}
 
 		// Delegate mouse events to the active tool
-		public void HandleMouseDown(MouseEventArgs e, Graphics graphics) {
-			ActiveTool?.OnMouseDown(e, graphics);
+		public void HandleMouseDown(MouseEventArgs e) {
+			ActiveTool?.OnMouseDown(e);
 		}
 
-		public void HandleMouseMove(MouseEventArgs e, Graphics graphics) {
-			ActiveTool?.OnMouseMove(e, graphics);
+		public void HandleMouseMove(MouseEventArgs e) {
+			ActiveTool?.OnMouseMove(e);
 		}
 
-		public void HandleMouseUp(MouseEventArgs e, Graphics graphics) {
-			ActiveTool?.OnMouseUp(e, graphics);
+		public void HandleMouseUp(MouseEventArgs e) {
+			ActiveTool?.OnMouseUp(e);
 		}
 
 		// Handle key press events
-		public void HandleKeyDown(KeyEventArgs e, Graphics graphics) {
+		public void HandleKeyDown(KeyEventArgs e) {
 			if (ActiveTool is IKeyInteractiveTool keyInteractiveTool) {
-				keyInteractiveTool.OnKeyDown(e, graphics);
+				keyInteractiveTool.OnKeyDown(e);
 			}
 		}
 
 		// Handle key release events
-		public void HandleKeyUp(KeyEventArgs e, Graphics graphics) {
+		public void HandleKeyUp(KeyEventArgs e) {
 			if (ActiveTool is IKeyInteractiveTool keyInteractiveTool) {
-				keyInteractiveTool.OnKeyUp(e, graphics);
+				keyInteractiveTool.OnKeyUp(e);
 			}
 		}
 
-		internal void CommitTool(Graphics graphics) {
+		internal void CommitTool() {
 			if (ActiveTool is ICommitableTool commitableTool) {
-				commitableTool.CommitTool(graphics);
+				commitableTool.CommitTool();
 			}
 		}
 		internal void ClearToolState() {

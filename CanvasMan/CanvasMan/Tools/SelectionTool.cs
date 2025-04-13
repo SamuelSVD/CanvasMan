@@ -12,17 +12,17 @@ namespace CanvasMan.Tools {
 		private bool isDraggingTool = false;
 
 		// Constructor to initialize the Select Tool
-		public SelectionTool(ColourManager colourManager, string name = "Select") : base(colourManager, name) {
+		public SelectionTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Select") : base(colourManager, canvasManager, name) {
 			selectionRectangle = Rectangle.Empty;
 		}
 
 		// Handle mouse down for starting a new selection or dragging
-		public override void OnMouseDown(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseDown(MouseEventArgs e) {
 			Logger.Log("SelectionTool - OnMouseDown");
 			if (isDefiningTool || isDraggingTool) {
 				// If we were dragging the selection, this means someone released
 				// the mouse press outside of the app
-				OnMouseUp(e, graphics);
+				OnMouseUp(e);
 			} else if (isToolDefined) {
 				if (selectionRectangle.Contains(e.Location)) {
 					// Start dragging the selected area
@@ -30,7 +30,7 @@ namespace CanvasMan.Tools {
 					initialDragPoint = e.Location;
 				} else {
 					// Commit the dragged location and clear the selection
-					CommitTool(graphics);
+					CommitTool();
 					ClearToolState();
 
 					// Initial press, start defining the 
@@ -44,7 +44,7 @@ namespace CanvasMan.Tools {
 		}
 
 		// Handle mouse movement for resizing the selection or dragging
-		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseMove(MouseEventArgs e) {
 			if (isDraggingTool && isToolDefined) {
 				// Calculate the offset for dragging
 				int dx = e.Location.X - initialDragPoint.X;
@@ -52,7 +52,7 @@ namespace CanvasMan.Tools {
 				selectionRectangle.X = initialSelectionRectanglePosition.X + dx;
 				selectionRectangle.Y = initialSelectionRectanglePosition.Y + dy;
 				// Redraw the current state
-				DrawCurrentState(graphics);
+				DrawCurrentState();
 			} else if (isDefiningTool && selectionRectangle != Rectangle.Empty) {
 				// Update the size of the defenition rectangle
 				int dw = e.X - initialDragPoint.X;
@@ -74,30 +74,30 @@ namespace CanvasMan.Tools {
 				}
 				selectionRectangle = new Rectangle(x, y, dw, dh);
 				// Redraw the current state
-				DrawCurrentState(graphics);
+				DrawCurrentState();
 			}
 		}
-		public override void DrawCurrentState(Graphics graphics) {
-			graphics.Clear(Color.White);
-			graphics.DrawImage(originalCanvasBitmap, 0, 0);
-			if (isToolDefined) graphics.DrawImage(selectedRegion, selectionRectangle.X, selectionRectangle.Y);
+		public override void DrawCurrentState() {
+			CanvasManager.CanvasGraphics.Clear(Color.White);
+			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
+			if (isToolDefined) CanvasManager.CanvasGraphics.DrawImage(selectedRegion, selectionRectangle.X, selectionRectangle.Y);
 			if (isDefiningTool) {
 				using (var pen = new Pen(Color.Red, 1) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) {
-					graphics.DrawRectangle(pen, selectionRectangle.X, selectionRectangle.Y, selectionRectangle.Width + 1, selectionRectangle.Height + 1);
+					CanvasManager.CanvasGraphics.DrawRectangle(pen, selectionRectangle.X, selectionRectangle.Y, selectionRectangle.Width + 1, selectionRectangle.Height + 1);
 				}
 			}
 			if (isDraggingTool) {
 				using (var pen = new Pen(Color.Blue, 1) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) {
-					graphics.DrawRectangle(pen, selectionRectangle.X, selectionRectangle.Y, selectionRectangle.Width + 1, selectionRectangle.Height + 1);
+					CanvasManager.CanvasGraphics.DrawRectangle(pen, selectionRectangle.X, selectionRectangle.Y, selectionRectangle.Width + 1, selectionRectangle.Height + 1);
 				}
 			}
 		}
 
 		// Handle mouse up for completing a selection or ending dragging
-		public override void OnMouseUp(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseUp(MouseEventArgs e) {
 			Logger.Log("SelectionTool - OnMouseUp");
 			if (isDefiningTool && !isDraggingTool) {
-				EndToolDefinition(e, graphics);
+				EndToolDefinition(e);
 			} else if (isDraggingTool) {
 				initialSelectionRectanglePosition.X = selectionRectangle.X;
 				initialSelectionRectanglePosition.Y = selectionRectangle.Y;
@@ -106,22 +106,22 @@ namespace CanvasMan.Tools {
 		}
 
 		// Copy and move the selected region (e.g., for CTRL + Arrow keys functionality)
-		public void CopyAndMoveSelection(Graphics graphics, int offsetX, int offsetY) {
+		public void CopyAndMoveSelection(int offsetX, int offsetY) {
 			if (isToolDefined) {
-				CommitTool(graphics);
+				CommitTool();
 				// Update the position of the selection rectangle
 				selectionRectangle.X += offsetX;
 				selectionRectangle.Y += offsetY;
 
 				// Draw the copied selection at the new position
 				isDraggingTool = true;
-				DrawCurrentState(graphics);
+				DrawCurrentState();
 				isDraggingTool = false;
 			}
 		}
 
 		// Copy and move the selected region (e.g., for CTRL + Arrow keys functionality)
-		public void MoveSelection(Graphics graphics, int offsetX, int offsetY) {
+		public void MoveSelection(int offsetX, int offsetY) {
 			if (isToolDefined) {
 				// Update the position of the selection rectangle
 				selectionRectangle.X += offsetX;
@@ -129,13 +129,13 @@ namespace CanvasMan.Tools {
 
 				// Draw the copied selection at the new position
 				isDraggingTool = true;
-				DrawCurrentState(graphics);
+				DrawCurrentState();
 				isDraggingTool = false;
 			}
 		}
 
 		// Implement OnKeyDown for handling key presses
-		public void OnKeyDown(KeyEventArgs e, Graphics graphics) {
+		public void OnKeyDown(KeyEventArgs e) {
 			if (e.Control) // Check if CTRL is held
 			{
 				int offsetX = 0, offsetY = 0;
@@ -157,12 +157,12 @@ namespace CanvasMan.Tools {
 				}
 
 				// Perform movement logic
-				CopyAndMoveSelection(graphics, offsetX, offsetY);
+				CopyAndMoveSelection(offsetX, offsetY);
 			}
 		}
 
 		// Implement OnKeyUp for handling key releases
-		public void OnKeyUp(KeyEventArgs e, Graphics graphics) {
+		public void OnKeyUp(KeyEventArgs e) {
 			// Optional: Add any logic needed when a key is released
 		}
 
@@ -179,7 +179,7 @@ namespace CanvasMan.Tools {
 			selectionRectangle = new Rectangle(e.Location, Size.Empty);
 		}
 
-		public override void EndToolDefinition(MouseEventArgs e, Graphics graphics) {
+		public override void EndToolDefinition(MouseEventArgs e) {
 			isDefiningTool = false;
 			if (!selectionRectangle.IsEmpty) {
 				if (selectionRectangle.X < 0) {
@@ -204,13 +204,13 @@ namespace CanvasMan.Tools {
 				}
 				// Capture the selected region from the canvas bitmap
 				if (selectionRectangle.Width > 0 && selectionRectangle.Height > 0) {
-					selectedRegion = originalCanvasBitmap?.Clone(selectionRectangle, canvasBitmap.PixelFormat);
+					selectedRegion = originalCanvasBitmap?.Clone(selectionRectangle, CanvasManager.CanvasImage.PixelFormat);
 					isToolDefined = true;
 					initialSelectionRectanglePosition = new Point(selectionRectangle.X, selectionRectangle.Y);
 				} else {
 					// Commit the dragged location and clear the selection
 					isDraggingTool = false;
-					DrawCurrentState(graphics);
+					DrawCurrentState();
 					SaveCanvasBitmapState();
 				}
 			}

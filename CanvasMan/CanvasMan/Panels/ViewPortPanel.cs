@@ -1,18 +1,18 @@
-﻿using System;
+﻿using CanvasMan.Managers;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace CanvasMan.Panels {
 	public class ViewPortPanel : DoubleBufferedPanel {
-		private Bitmap canvasImage;          // The canvas image to display
 		private Point dragStartPoint;       // Tracks the starting point for dragging
 		private bool isDragging;            // Flag for tracking if dragging is active
 		private float zoomFactor = 1.0f;    // Current zoom level
 		private PointF canvasOffset;        // Offset for panning the canvas
 		private DoubleBufferedPanel canvasPanel;
-
-		public ViewPortPanel(Bitmap canvasImage, DoubleBufferedPanel canvasPanel) {
-			this.canvasImage = canvasImage;
+		private CanvasManager canvasManager;
+		public ViewPortPanel(CanvasManager canvasManager, DoubleBufferedPanel canvasPanel) {
+			this.canvasManager = canvasManager;
 			this.canvasPanel = canvasPanel;
 
 			// Enable double buffering
@@ -43,8 +43,8 @@ namespace CanvasMan.Panels {
 			e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 
 			// Draw the canvas image
-			if (canvasImage != null) {
-				e.Graphics.DrawImage(canvasImage, 0, 0);
+			if (canvasManager.CanvasImage != null) {
+				e.Graphics.DrawImage(canvasManager.CanvasImage, 0, 0);
 			}
 		}
 

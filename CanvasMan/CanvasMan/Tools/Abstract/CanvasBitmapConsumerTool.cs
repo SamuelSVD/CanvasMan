@@ -10,49 +10,43 @@ using System.Threading.Tasks;
 namespace CanvasMan.Tools.Abstract {
 	public abstract class CanvasBitmapConsumerTool : Tool, ICommitableTool, IBasicStateControlTool {
 		private const int grabRadius = 8; // Area around endpoints to detect dragging
-		protected Bitmap? canvasBitmap; // Reference to the canvas bitmap
 		protected Bitmap? originalCanvasBitmap; // Reference to the canvas bitmap
 		protected bool isDefiningTool = false;
 		protected bool isToolDefined = false;
 		protected bool isToolChanged = false;
 		protected Point initialDragPoint = Point.Empty;         // Stores the starting point of a drag operation
 
-		public CanvasBitmapConsumerTool(ColourManager colourManager, string name) : base(colourManager, name) {
+		public CanvasBitmapConsumerTool(ColourManager colourManager, CanvasManager canvasManager, string name) : base(colourManager, canvasManager, name) {
 			colourManager.ColorChanged += ColourManager_ColorChanged;
 		}
 
 		private void ColourManager_ColorChanged() {
-			if (IsActive && canvasBitmap is not null) {
-				DrawCurrentState(Graphics.FromImage(canvasBitmap));
+			if (IsActive) {
+				DrawCurrentState();
 				RefreshCanvasCallback?.Invoke();
 			}
 		}
-
-		// Set the canvas bitmap (required for handling selections)
-		public void SetCanvasBitmap(Bitmap canvas) {
-			canvasBitmap = canvas;
-		}
 		public void SaveCanvasBitmapState() {
-			originalCanvasBitmap = (Bitmap)canvasBitmap.Clone();
+			originalCanvasBitmap = (Bitmap)CanvasManager.CanvasImage.Clone();
 		}
 		public void ClearCanvasBitmapState() {
 			originalCanvasBitmap = null;
 		}
 		public abstract void ClearToolState();
 		public abstract void StartToolDefinition(MouseEventArgs e);
-		public abstract void EndToolDefinition(MouseEventArgs e, Graphics graphics);
-		public abstract void DrawCurrentState(Graphics graphics);
+		public abstract void EndToolDefinition(MouseEventArgs e);
+		public abstract void DrawCurrentState();
 
-		public override void OnActivate(Graphics graphics) {
+		public override void OnActivate() {
 			ClearToolState();
 			SaveCanvasBitmapState();
 		}
-		public override void OnDeactivate(Graphics graphics) {
-			if (isToolDefined) CommitTool(graphics);
+		public override void OnDeactivate() {
+			if (isToolDefined) CommitTool();
 			else ClearToolState();
 		}
-		public void CommitTool(Graphics graphics) {
-			DrawCurrentState(graphics);
+		public void CommitTool() {
+			DrawCurrentState();
 			SaveCanvasBitmapState();
 			if (isToolChanged) {
 				SaveStateCallback?.Invoke();

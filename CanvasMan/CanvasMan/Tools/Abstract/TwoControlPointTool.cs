@@ -8,7 +8,7 @@ namespace CanvasMan.Tools.Abstract {
 		protected List<ControlPoint> controlPoints = new List<ControlPoint>();
 		protected ControlLine controlLine;
 		protected ControlManager controlManager = new ControlManager();
-		public TwoControlPointTool(ColourManager colourManager, string name) : base(colourManager, name) {
+		public TwoControlPointTool(ColourManager colourManager, CanvasManager canvasManager, string name) : base(colourManager, canvasManager, name) {
 			controlLine = new ControlLine(startPoint, endPoint);
 			controlPoints.Add(startPoint);
 			controlPoints.Add(endPoint);
@@ -16,17 +16,17 @@ namespace CanvasMan.Tools.Abstract {
 			controlManager.Controls.Add(endPoint);
 			controlManager.Controls.Add(controlLine);
 		}
-		public override void OnMouseDown(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseDown(MouseEventArgs e) {
 			if (isDefiningTool || controlManager.IsActive()) {
 				// If we were dragging the selection, this means someone released
 				// the mouse press outside of the app
-				OnMouseUp(e, graphics);
+				OnMouseUp(e);
 			} else if (isToolDefined) {
 				// Check if the user clicked near an endpoint or on the arrow line
 				if (controlManager.OnMouseDown(e.Location, 5)) {
 					return;
 				}
-				CommitTool(graphics);
+				CommitTool();
 				ClearToolState();
 
 				// Initial press, start defining the 
@@ -46,7 +46,7 @@ namespace CanvasMan.Tools.Abstract {
 			}
 			Cursor.Current = Cursors.Default;
 		}
-		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseMove(MouseEventArgs e) {
 			UpdateCursor(e.Location);
 
 			if (controlLine.OnMouseMove(e.Location)) {
@@ -62,14 +62,14 @@ namespace CanvasMan.Tools.Abstract {
 			}
 
 			if (isDefiningTool || controlLine.IsActive || controlPoints.Exists(t => t.IsActive)) {
-				DrawCurrentState(graphics);
+				DrawCurrentState();
 			}
 		}
 
-		public override void OnMouseUp(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseUp(MouseEventArgs e) {
 			// Stop dragging operations
 			if (isDefiningTool) {
-				EndToolDefinition(e, graphics);
+				EndToolDefinition(e);
 			}
 			if (controlLine.OnMouseUp(e.Location)) {
 				isToolChanged = true;
@@ -85,7 +85,7 @@ namespace CanvasMan.Tools.Abstract {
 			isDefiningTool = true;
 			startPoint.Location = e.Location;
 		}
-		public override void EndToolDefinition(MouseEventArgs e, Graphics graphics) {
+		public override void EndToolDefinition(MouseEventArgs e) {
 			endPoint.Location = new Point(e.Location.X, e.Location.Y);
 			isDefiningTool = false;
 			controlLine.IsActive = false;

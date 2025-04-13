@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace CanvasMan.Tools {
 	public class ArrowTool : TwoControlPointTool {
 
-		public ArrowTool(ColourManager colourManager, string name = "Arrow") : base(colourManager, name) {
+		public ArrowTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Arrow") : base(colourManager, canvasManager, name) {
 		}
 
 		private void DrawArrow(Graphics graphics) {
@@ -40,9 +40,9 @@ namespace CanvasMan.Tools {
 			}
 		}
 
-		public override void DrawCurrentState(Graphics graphics) {
-			graphics.DrawImage(originalCanvasBitmap, 0, 0);
-			DrawArrow(graphics);
+		public override void DrawCurrentState() {
+			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
+			DrawArrow(CanvasManager.CanvasGraphics);
 		}
 	}
 }

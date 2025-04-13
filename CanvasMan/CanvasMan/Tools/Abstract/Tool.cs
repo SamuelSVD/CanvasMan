@@ -13,30 +13,32 @@ namespace CanvasMan.Tools.Abstract {
 		public Action? RefreshCanvasCallback { get; set; }
 
 		protected ColourManager ColourManager;
+		protected CanvasManager CanvasManager;
 		// Constructor to initialize the tool's name
-		protected Tool(ColourManager colourManager, string name) {
+		protected Tool(ColourManager colourManager, CanvasManager canvasManager, string name) {
 			Name = name;
 			IsActive = false;
 			ColourManager = colourManager;
+			CanvasManager = canvasManager;
 		}
 
 		// Methods to activate or deactivate the tool
-		public virtual void Activate(Graphics graphics) {
+		public virtual void Activate() {
 			IsActive = true;
-			OnActivate(graphics);
+			OnActivate();
 		}
 
-		public virtual void Deactivate(Graphics graphics) {
+		public virtual void Deactivate() {
 			IsActive = false;
-			OnDeactivate(graphics);
+			OnDeactivate();
 		}
 
-		public abstract void OnActivate(Graphics graphics);
-		public abstract void OnDeactivate(Graphics graphics);
+		public abstract void OnActivate();
+		public abstract void OnDeactivate();
 		// Abstract methods for handling mouse events
 		// These must be overridden in derived tool classes
-		public abstract void OnMouseDown(MouseEventArgs e, Graphics graphics);
-		public abstract void OnMouseMove(MouseEventArgs e, Graphics graphics);
-		public abstract void OnMouseUp(MouseEventArgs e, Graphics graphics);
+		public abstract void OnMouseDown(MouseEventArgs e);
+		public abstract void OnMouseMove(MouseEventArgs e);
+		public abstract void OnMouseUp(MouseEventArgs e);
 	}
 }

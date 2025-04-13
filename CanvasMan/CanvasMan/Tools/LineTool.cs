@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace CanvasMan.Tools {
 	public class LineTool : TwoControlPointTool {
 		public int BrushSize = 5;
-		public LineTool(ColourManager colourManager, string name = "Line") : base(colourManager, name) {
+		public LineTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Line") : base(colourManager, canvasManager, name) {
 		}
 
 		private void DrawLine(Graphics graphics) {
@@ -21,9 +21,9 @@ namespace CanvasMan.Tools {
 			}
 		}
 
-		public override void DrawCurrentState(Graphics graphics) {
-			graphics.DrawImage(originalCanvasBitmap, 0, 0);
-			DrawLine(graphics);
+		public override void DrawCurrentState() {
+			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
+			DrawLine(CanvasManager.CanvasGraphics);
 		}
 	}
 }

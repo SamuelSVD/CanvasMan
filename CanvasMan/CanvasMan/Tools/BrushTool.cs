@@ -10,20 +10,20 @@ namespace CanvasMan.Tools {
         private Point? lastPoint = null; // Store the last drawn mouse position as a nullable Point.
 		private bool isDragging = false;
 		// Constructor to initialize the brush tool
-		public BrushTool(ColourManager colourManager, string name = "Brush", int size = 5) : base(colourManager, name) {
+		public BrushTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Brush", int size = 5) : base(colourManager, canvasManager, name) {
 			BrushSize = size;
 		}
 
 		// Handle the mouse down event (not necessary for continuous strokes)
-		public override void OnMouseDown(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseDown(MouseEventArgs e) {
 			lastPoint = e.Location;
 
 			// Optional: Create a small dot where the mouse is clicked
 			if (e.Button == MouseButtons.Left) {
 				using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
-					graphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+					CanvasManager.CanvasGraphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
 					if (BrushSize == 1) {
-						graphics.FillRectangle(brush, e.X, e.Y, 1, 1);
+						CanvasManager.CanvasGraphics.FillRectangle(brush, e.X, e.Y, 1, 1);
 					}
 				}
 			}
@@ -31,29 +31,29 @@ namespace CanvasMan.Tools {
 		}
 
 		// Handle the mouse move event (for continuous strokes)
-		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseMove(MouseEventArgs e) {
 			if (e.Button == MouseButtons.Left && lastPoint is not null) {
 				using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
-					graphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+					CanvasManager.CanvasGraphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
 				}
 				using (var pen = new Pen(ColourManager.CurrentColor, BrushSize))
                 {
-                    graphics.DrawLine(pen, lastPoint!.Value, e.Location);
+                    CanvasManager.CanvasGraphics.DrawLine(pen, lastPoint!.Value, e.Location);
                 }
 				lastPoint = e.Location;
 			}
 		}
 
 		// Handle the mouse up event (no specific behavior needed here for the brush)
-		public override void OnMouseUp(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseUp(MouseEventArgs e) {
 			// BrushTool doesn't need to do anything special on mouse release
 			isDragging = false;
 			SaveStateCallback?.Invoke();
 		}
 
-		public override void OnActivate(Graphics graphics) {}
+		public override void OnActivate() {}
 
-		public override void OnDeactivate(Graphics graphics) {
+		public override void OnDeactivate() {
 			if (isDragging) {
 				SaveStateCallback?.Invoke();
 			}

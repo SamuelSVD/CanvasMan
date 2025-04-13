@@ -6,30 +6,23 @@ using System.Windows.Forms;
 
 namespace CanvasMan.Tools {
 	public class FillTool : Tool {
-		private Bitmap canvasBitmap;        // Reference to the canvas bitmap
-
 		// Constructor to initialize the Fill Tool
-		public FillTool(ColourManager colourManager, string name = "Fill") : base(colourManager, name) {
-		}
-
-		// Set the canvas bitmap (required for performing the fill operation)
-		public void SetCanvasBitmap(Bitmap canvas) {
-			canvasBitmap = canvas;
+		public FillTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Fill") : base(colourManager, canvasManager, name) {
 		}
 
 		// Handle mouse down to start the fill operation
-		public override void OnMouseDown(MouseEventArgs e, Graphics graphics) {
-			if (canvasBitmap != null && e.Button == MouseButtons.Left) {
+		public override void OnMouseDown(MouseEventArgs e) {
+			if (CanvasManager.CanvasImage != null && e.Button == MouseButtons.Left) {
 				// Perform the flood fill operation
 				Point clickPoint = new Point(e.X, e.Y);
 				if (clickPoint.X < 0) return;
 				if (clickPoint.Y < 0) return;
-				if (clickPoint.X > canvasBitmap.Width) return;
-				if (clickPoint.Y > canvasBitmap.Height) return;
-				Color targetColor = canvasBitmap.GetPixel(clickPoint.X, clickPoint.Y);
+				if (clickPoint.X > CanvasManager.CanvasImage.Width) return;
+				if (clickPoint.Y > CanvasManager.CanvasImage.Height) return;
+				Color targetColor = CanvasManager.CanvasImage.GetPixel(clickPoint.X, clickPoint.Y);
 
 				if (targetColor != ColourManager.CurrentColor) {
-					FloodFill(canvasBitmap, clickPoint, targetColor, ColourManager.CurrentColor);
+					FloodFill(CanvasManager.CanvasImage, clickPoint, targetColor, ColourManager.CurrentColor);
 				}
 
 				SaveStateCallback?.Invoke();
@@ -37,8 +30,8 @@ namespace CanvasMan.Tools {
 		}
 
 		// These methods are not needed for the FillTool
-		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) { }
-		public override void OnMouseUp(MouseEventArgs e, Graphics graphics) { }
+		public override void OnMouseMove(MouseEventArgs e) { }
+		public override void OnMouseUp(MouseEventArgs e) { }
 
 		// Optimized Flood Fill using LockBits and a stack (assuming 24bpp RGB)
 		private void FloodFill(Bitmap bitmap, Point start, Color targetColor, Color replacementColor) {
@@ -100,8 +93,8 @@ namespace CanvasMan.Tools {
 			bitmap.UnlockBits(bmpData);
 		}
 
-		public override void OnActivate(Graphics graphics) { }
+		public override void OnActivate() { }
 
-		public override void OnDeactivate(Graphics graphics) { }
+		public override void OnDeactivate() { }
 	}
 }

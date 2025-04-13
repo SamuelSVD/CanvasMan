@@ -3,7 +3,7 @@
 	public interface IBasicStateControlTool {
 		public abstract void ClearToolState();
 		public abstract void StartToolDefinition(MouseEventArgs e);
-		public abstract void EndToolDefinition(MouseEventArgs e, Graphics graphics);
-		public abstract void DrawCurrentState(Graphics graphics);
+		public abstract void EndToolDefinition(MouseEventArgs e);
+		public abstract void DrawCurrentState();
 	}
 }

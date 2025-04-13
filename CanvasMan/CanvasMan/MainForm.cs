@@ -7,8 +7,7 @@ using System.Drawing;
 namespace CanvasMan {
 	public partial class MainForm : Form {
 		private ToolManager toolManager;
-		private Bitmap canvasBitmap;
-		private Graphics canvasGraphics;
+		private CanvasManager canvasManager;
 		private DoubleBufferedPanel canvasPanel;
 		private ViewPortPanel viewportPanel;
 		private RichTextBox logRichTextBox; // Special control for displaying log messages
@@ -17,9 +16,7 @@ namespace CanvasMan {
 		private Ribbon ribbon;
 		public MainForm() {
 			InitializeComponent();
-			// Initialize the colour manager
-			colourManager = new ColourManager();
-
+			InitializeManagers();
 			//InitializeLoggerPanel();
 			//SubscribeToLogger();  // Subscribe to log events
 			InitializeRibbon();
@@ -27,10 +24,16 @@ namespace CanvasMan {
 			InitializeViewport();
 			InitializeTools();
 		}
+		private void InitializeManagers() {
+			// Initialize the colour manager
+			colourManager = new ColourManager();
+			// Initialize the canvas manager
+			canvasManager = new CanvasManager(800, 600);
+		}
 
 		private void InitializeViewport() {
 			// Create the viewport (DoubleBufferedPanel)
-			viewportPanel = new ViewPortPanel(canvasBitmap, canvasPanel)
+			viewportPanel = new ViewPortPanel(canvasManager, canvasPanel)
 			{
 				Dock = DockStyle.Fill, // Fill the main form
 				BackColor = Color.Gray // Optional: distinguish it visually
@@ -43,16 +46,12 @@ namespace CanvasMan {
 		}
 
 		private void InitializeCanvas() {
-			// Set up the canvas (panel with background image)
-			canvasBitmap = new Bitmap(800, 600);
-			canvasGraphics = Graphics.FromImage(canvasBitmap);
-			canvasGraphics.Clear(Color.White); // Clear canvas to white
 
 			canvasPanel = new DoubleBufferedPanel
 			{
 				Location = new Point(10, 40),
 				Size = new Size(800, 600),
-				BackgroundImage = canvasBitmap,
+				BackgroundImage = canvasManager.CanvasImage,
 				BackgroundImageLayout = ImageLayout.None,
 				BorderStyle = BorderStyle.FixedSingle
 			};
@@ -63,7 +62,7 @@ namespace CanvasMan {
 			canvasPanel.PreviewKeyDown += MainForm_PreviewKeyDown;
 
 			stateManager = new StateManager();
-			stateManager.SaveState(canvasBitmap);
+			stateManager.SaveState(canvasManager.CanvasImage);
 		}
 
 		private readonly Color[] basePalette = new Color[]
@@ -260,25 +259,18 @@ namespace CanvasMan {
 			toolManager.RefreshCanvasCallback = () => RefreshCanvas();
 
 			// Add tools
-			var brushTool = new BrushTool(colourManager, "Brush", 5);
-			brushTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
-			var fillTool = new FillTool(colourManager, "Fill");
-			fillTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
-			var selectionTool = new SelectionTool(colourManager, "Select");
-			selectionTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
-			var rectangleTool = new RectangleTool(colourManager, "Rectangle");
-			rectangleTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
-			var arrowTool = new ArrowTool(colourManager, "Arrow");
-			arrowTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
-			var lineTool = new LineTool(colourManager, "Line");
-			lineTool.SaveStateCallback = () => stateManager.SaveState(canvasBitmap);
-
-			// Pass the canvas bitmap tools as needed
-			selectionTool.SetCanvasBitmap(canvasBitmap);
-			fillTool.SetCanvasBitmap(canvasBitmap);
-			rectangleTool.SetCanvasBitmap(canvasBitmap);
-			arrowTool.SetCanvasBitmap(canvasBitmap);
-			lineTool.SetCanvasBitmap(canvasBitmap);
+			var brushTool = new BrushTool(colourManager, canvasManager, "Brush", 5);
+			brushTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			var fillTool = new FillTool(colourManager, canvasManager, "Fill");
+			fillTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			var selectionTool = new SelectionTool(colourManager, canvasManager, "Select");
+			selectionTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			var rectangleTool = new RectangleTool(colourManager, canvasManager, "Rectangle");
+			rectangleTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			var arrowTool = new ArrowTool(colourManager, canvasManager, "Arrow");
+			arrowTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			var lineTool = new LineTool(colourManager, canvasManager, "Line");
+			lineTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
 
 			// Add tools to the ToolManager
 			toolManager.AddTool(brushTool);
@@ -289,7 +281,7 @@ namespace CanvasMan {
 			toolManager.AddTool(lineTool);
 
 			// Activate the default tool
-			toolManager.ActivateTool("Brush", canvasGraphics);
+			toolManager.ActivateTool("Brush");
 		}
 
 		private void InitializeLoggerPanel() {
@@ -322,17 +314,17 @@ namespace CanvasMan {
 		}
 
 		private void CanvasPanel_MouseDown(object sender, MouseEventArgs e) {
-			toolManager.ActiveTool?.OnMouseDown(e, canvasGraphics);
+			toolManager.ActiveTool?.OnMouseDown(e);
 			RefreshCanvas();
 		}
 
 		private void CanvasPanel_MouseMove(object sender, MouseEventArgs e) {
-			toolManager.ActiveTool?.OnMouseMove(e, canvasGraphics);
+			toolManager.ActiveTool?.OnMouseMove(e);
 			RefreshCanvas();
 		}
 
 		private void CanvasPanel_MouseUp(object sender, MouseEventArgs e) {
-			toolManager.ActiveTool?.OnMouseUp(e, canvasGraphics);
+			toolManager.ActiveTool?.OnMouseUp(e);
 			RefreshCanvas();
 		}
 
@@ -345,7 +337,7 @@ namespace CanvasMan {
 		private void MainForm_KeyDown(object sender, KeyEventArgs e) {
 			// Check for CTRL+Z for Undo
 			if (e.Control && e.KeyCode == Keys.Z) {
-				toolManager.CommitTool(canvasGraphics);
+				toolManager.CommitTool();
 				toolManager.ClearToolState();
 				undoToolStripMenuItem_Click(sender, e);
 				e.Handled = true; // Mark the event as handled.
@@ -378,38 +370,38 @@ namespace CanvasMan {
 				}
 				if (e.Control) {
 					// Copy and move the selection
-					selectionTool.CopyAndMoveSelection(canvasGraphics, offsetX, offsetY);
+					selectionTool.CopyAndMoveSelection(offsetX, offsetY);
 				} else {
-					selectionTool.MoveSelection(canvasGraphics, offsetX, offsetY);
+					selectionTool.MoveSelection(offsetX, offsetY);
 				}
 				RefreshCanvas();
 			}
 		}
 
 		private void brushToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Brush", canvasGraphics);
+			toolManager.ActivateTool("Brush");
 		}
 
 		private void fillToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Fill", canvasGraphics);
+			toolManager.ActivateTool("Fill");
 		}
 
 		private void selectToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Select", canvasGraphics);
+			toolManager.ActivateTool("Select");
 		}
 		private void lineToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Line", canvasGraphics);
+			toolManager.ActivateTool("Line");
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
-			canvasGraphics.DrawImage((Bitmap)stateManager.Undo(canvasBitmap).Clone(), new Point(0, 0));
+			canvasManager.CanvasGraphics.DrawImage((Bitmap)stateManager.Undo(canvasManager.CanvasImage).Clone(), new Point(0, 0));
 			RefreshCanvas();
 			Logger.Log("Undo performed.");
 			Logger.Log($"{stateManager.UndoCount}, {stateManager.RedoCount}");
 		}
 
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e) {
-			canvasGraphics.DrawImage((Bitmap)stateManager.Redo(canvasBitmap).Clone(), new Point(0, 0));
+			canvasManager.CanvasGraphics.DrawImage((Bitmap)stateManager.Redo(canvasManager.CanvasImage).Clone(), new Point(0, 0));
 			RefreshCanvas();
 			Logger.Log("Redo performed.");
 			Logger.Log($"{stateManager.UndoCount}, {stateManager.RedoCount}");
@@ -448,7 +440,7 @@ namespace CanvasMan {
 						offsetX = 1; // Move right
 						break;
 				}
-				selectionTool.MoveSelection(canvasGraphics, offsetX, offsetY);
+				selectionTool.MoveSelection(offsetX, offsetY);
 				RefreshCanvas();
 			}
 			//capture up arrow key
@@ -471,11 +463,11 @@ namespace CanvasMan {
 		}
 
 		private void rectangleToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Rectangle", canvasGraphics);
+			toolManager.ActivateTool("Rectangle");
 		}
 
 		private void arrowToolStripMenuItem_Click(object sender, EventArgs e) {
-			toolManager.ActivateTool("Arrow", canvasGraphics);
+			toolManager.ActivateTool("Arrow");
 		}
 	}
 }

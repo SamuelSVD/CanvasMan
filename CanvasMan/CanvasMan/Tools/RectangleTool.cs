@@ -17,15 +17,15 @@ namespace CanvasMan {
 		private bool isDraggingEnd = false;
 		private bool isDraggingTool = false;
 		public int BorderWidth { get; set; }       // Width of the rectangle border
-		public RectangleTool(ColourManager colourManager, string name, int borderWidth = 1) : base(colourManager, name) {
+		public RectangleTool(ColourManager colourManager, CanvasManager canvasManager, string name, int borderWidth = 1) : base(colourManager, canvasManager, name) {
 			BorderWidth = borderWidth;
 		}
 
-		public override void OnMouseDown(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseDown(MouseEventArgs e) {
 			if (isDefiningTool || isDraggingTool) {
 				// If we were dragging the selection, this means someone released
 				// the mouse press outside of the app
-				OnMouseUp(e, graphics);
+				OnMouseUp(e);
 			} else if (isToolDefined) {
 				// Check if the user clicked near an endpoint or on the arrow line
 				if (ControlUtils.IsNearPoint(e.Location, startPoint, 5)) {
@@ -44,7 +44,7 @@ namespace CanvasMan {
 					initialEndPoint = endPoint;
 				} else {
 					// Commit the dragged location and clear the selection
-					CommitTool(graphics);
+					CommitTool();
 					ClearToolState();
 
 					// Initial press, start defining the 
@@ -57,7 +57,7 @@ namespace CanvasMan {
 			}
 		}
 
-		public override void OnMouseMove(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseMove(MouseEventArgs e) {
 			if (isDraggingTool) {
 				// Move the entire arrow by offsetting both points
 				int dx = e.Location.X - initialDragPoint.X;
@@ -79,14 +79,14 @@ namespace CanvasMan {
 			}
 
 			if (isDefiningTool || isDraggingTool || isDraggingStart || isDraggingEnd) {
-				DrawCurrentState(graphics);
+				DrawCurrentState();
 			}
 		}
 
-		public override void OnMouseUp(MouseEventArgs e, Graphics graphics) {
+		public override void OnMouseUp(MouseEventArgs e) {
 			// Stop dragging operations
 			if (isDefiningTool) {
-				EndToolDefinition(e, graphics);
+				EndToolDefinition(e);
 			} else if (isDraggingTool) {
 				int dx = e.Location.X - initialDragPoint.X;
 				int dy = e.Location.Y - initialDragPoint.Y;
@@ -131,7 +131,7 @@ namespace CanvasMan {
 			startPoint = e.Location;
 		}
 
-		public override void EndToolDefinition(MouseEventArgs e, Graphics graphics) {
+		public override void EndToolDefinition(MouseEventArgs e) {
 			endPoint = e.Location;
 			isDefiningTool = false;
 			isDraggingTool = false;
@@ -141,12 +141,12 @@ namespace CanvasMan {
 			isToolChanged = true;
 		}
 
-		public override void DrawCurrentState(Graphics graphics) {
+		public override void DrawCurrentState() {
 			// Reset the canvas to the original state to avoid overlapping artifacts
-			graphics.DrawImage(originalCanvasBitmap, 0, 0);
+			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
 
 			// Perform the rectangle drawing
-			DrawRectangle(graphics, startPoint, endPoint);
+			DrawRectangle(CanvasManager.CanvasGraphics, startPoint, endPoint);
 		}
 	}
 }
