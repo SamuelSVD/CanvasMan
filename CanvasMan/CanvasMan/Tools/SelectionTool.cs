@@ -215,5 +215,20 @@ namespace CanvasMan.Tools {
 				}
 			}
 		}
+
+		public void OnPreviewKeyDown(PreviewKeyDownEventArgs e) {
+			if (e.KeyCode == Keys.Up) {
+				e.IsInputKey = true;
+			}
+			if (e.KeyCode == Keys.Down) {
+				e.IsInputKey = true;
+			}
+			if (e.KeyCode == Keys.Left) {
+				e.IsInputKey = true;
+			}
+			if (e.KeyCode == Keys.Right) {
+				e.IsInputKey = true;
+			}
+		}
 	}
 }

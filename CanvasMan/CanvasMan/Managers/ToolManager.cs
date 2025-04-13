@@ -91,5 +91,11 @@ namespace CanvasMan.Managers {
 				bTool.BrushSize = newBrushSize;
 			}
 		}
+
+		internal void HandlePreviewKeyDown(PreviewKeyDownEventArgs e) {
+			if (ActiveTool is IKeyInteractiveTool keyInteractive) {
+				keyInteractive.OnPreviewKeyDown(e);
+			}
+		}
 	}
 }

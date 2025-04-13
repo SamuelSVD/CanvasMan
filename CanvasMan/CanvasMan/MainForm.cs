@@ -408,18 +408,7 @@ namespace CanvasMan {
 		}
 
 		private void MainForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
-			if (e.KeyCode == Keys.Up) {
-				e.IsInputKey = true;
-			}
-			if (e.KeyCode == Keys.Down) {
-				e.IsInputKey = true;
-			}
-			if (e.KeyCode == Keys.Left) {
-				e.IsInputKey = true;
-			}
-			if (e.KeyCode == Keys.Right) {
-				e.IsInputKey = true;
-			}
+			toolManager.HandlePreviewKeyDown(e);
 		}
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
 			// Handle CTRL + Arrow keys for duplicating and moving selection
