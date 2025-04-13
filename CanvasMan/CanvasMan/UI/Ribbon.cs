@@ -46,7 +46,9 @@ namespace CanvasMan.UI {
 				Location = new Point(10, tabPage.Controls.Count * 90),
 				Dock = DockStyle.Left,
 				AutoSize = true,
+				//Margin = new Padding(25, 25, 25, 25),
 				//BackColor = Color.Gold
+				//Anchor = AnchorStyles.Top | AnchorStyles.Left,
 			};
 
 			tabPage.Controls.Add(groupBox);

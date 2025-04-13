@@ -97,5 +97,14 @@ namespace CanvasMan.Managers {
 				keyInteractive.OnPreviewKeyDown(e);
 			}
 		}
+
+		internal bool HandleProcessCmdKey(ref Message msg, Keys keyData) {
+			if (ActiveTool is IKeyInteractiveTool keyInteractive) {
+				if (keyInteractive.OnProcessCommandKey(ref msg, keyData)) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

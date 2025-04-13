@@ -350,32 +350,8 @@ namespace CanvasMan {
 				return;
 			}
 
-			// Handle CTRL + Arrow keys for duplicating and moving selection
-			if (toolManager.ActiveTool is SelectionTool selectionTool) {
-				int offsetX = 0, offsetY = 0;
-
-				switch (e.KeyCode) {
-					case Keys.Up:
-						offsetY = -1; // Move up
-						break;
-					case Keys.Down:
-						offsetY = 1; // Move down
-						break;
-					case Keys.Left:
-						offsetX = -1; // Move left
-						break;
-					case Keys.Right:
-						offsetX = 1; // Move right
-						break;
-				}
-				if (e.Control) {
-					// Copy and move the selection
-					selectionTool.CopyAndMoveSelection(offsetX, offsetY);
-				} else {
-					selectionTool.MoveSelection(offsetX, offsetY);
-				}
-				RefreshCanvas();
-			}
+			toolManager.HandleKeyDown(e);
+			RefreshCanvas();
 		}
 
 		private void brushToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -411,26 +387,9 @@ namespace CanvasMan {
 			toolManager.HandlePreviewKeyDown(e);
 		}
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
-			// Handle CTRL + Arrow keys for duplicating and moving selection
-			if (toolManager.ActiveTool is SelectionTool selectionTool) {
-				int offsetX = 0, offsetY = 0;
-
-				switch (keyData) {
-					case Keys.Up:
-						offsetY = -1; // Move up
-						break;
-					case Keys.Down:
-						offsetY = 1; // Move down
-						break;
-					case Keys.Left:
-						offsetX = -1; // Move left
-						break;
-					case Keys.Right:
-						offsetX = 1; // Move right
-						break;
-				}
-				selectionTool.MoveSelection(offsetX, offsetY);
+			if (toolManager.HandleProcessCmdKey(ref msg, keyData)) {
 				RefreshCanvas();
+				return true;
 			}
 			//capture up arrow key
 			if (keyData == Keys.Up) {

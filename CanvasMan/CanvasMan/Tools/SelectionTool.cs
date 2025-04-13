@@ -136,31 +136,29 @@ namespace CanvasMan.Tools {
 
 		// Implement OnKeyDown for handling key presses
 		public void OnKeyDown(KeyEventArgs e) {
-			if (e.Control) // Check if CTRL is held
-			{
-				int offsetX = 0, offsetY = 0;
+			int offsetX = 0, offsetY = 0;
 
-				// Determine the direction based on the arrow key pressed
-				switch (e.KeyCode) {
-					case Keys.Up:
-						offsetY = -10; // Move up
-						break;
-					case Keys.Down:
-						offsetY = 10; // Move down
-						break;
-					case Keys.Left:
-						offsetX = -10; // Move left
-						break;
-					case Keys.Right:
-						offsetX = 10; // Move right
-						break;
-				}
-
-				// Perform movement logic
+			switch (e.KeyCode) {
+				case Keys.Up:
+					offsetY = -1; // Move up
+					break;
+				case Keys.Down:
+					offsetY = 1; // Move down
+					break;
+				case Keys.Left:
+					offsetX = -1; // Move left
+					break;
+				case Keys.Right:
+					offsetX = 1; // Move right
+					break;
+			}
+			if (e.Control) {
+				// Copy and move the selection
 				CopyAndMoveSelection(offsetX, offsetY);
+			} else {
+				MoveSelection(offsetX, offsetY);
 			}
 		}
-
 		// Implement OnKeyUp for handling key releases
 		public void OnKeyUp(KeyEventArgs e) {
 			// Optional: Add any logic needed when a key is released
@@ -229,6 +227,28 @@ namespace CanvasMan.Tools {
 			if (e.KeyCode == Keys.Right) {
 				e.IsInputKey = true;
 			}
+		}
+
+		public bool OnProcessCommandKey(ref Message msg, Keys keyData) {
+			// Handle CTRL + Arrow keys for duplicating and moving selection
+			int offsetX = 0, offsetY = 0;
+
+			switch (keyData) {
+				case Keys.Up:
+					offsetY = -1; // Move up
+					break;
+				case Keys.Down:
+					offsetY = 1; // Move down
+					break;
+				case Keys.Left:
+					offsetX = -1; // Move left
+					break;
+				case Keys.Right:
+					offsetX = 1; // Move right
+					break;
+			}
+			MoveSelection(offsetX, offsetY);
+			return true;
 		}
 	}
 }
