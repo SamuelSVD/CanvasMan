@@ -31,7 +31,7 @@ namespace CanvasMan {
 			// Initialize the canvas manager
 			canvasManager = new CanvasManager(800, 600);
 			stateManager = new StateManager(canvasManager);
-			stateManager.SaveState(canvasManager.CanvasImage);
+			stateManager.SaveState();
 
 		}
 
@@ -262,17 +262,17 @@ namespace CanvasMan {
 
 			// Add tools
 			var brushTool = new BrushTool(colourManager, canvasManager, "Brush", 5);
-			brushTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			brushTool.SaveStateCallback = () => stateManager.SaveState();
 			var fillTool = new FillTool(colourManager, canvasManager, "Fill");
-			fillTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			fillTool.SaveStateCallback = () => stateManager.SaveState();
 			var selectionTool = new SelectionTool(colourManager, canvasManager, "Select");
-			selectionTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			selectionTool.SaveStateCallback = () => stateManager.SaveState();
 			var rectangleTool = new RectangleTool(colourManager, canvasManager, "Rectangle");
-			rectangleTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			rectangleTool.SaveStateCallback = () => stateManager.SaveState();
 			var arrowTool = new ArrowTool(colourManager, canvasManager, "Arrow");
-			arrowTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			arrowTool.SaveStateCallback = () => stateManager.SaveState();
 			var lineTool = new LineTool(colourManager, canvasManager, "Line");
-			lineTool.SaveStateCallback = () => stateManager.SaveState(canvasManager.CanvasImage);
+			lineTool.SaveStateCallback = () => stateManager.SaveState();
 
 			// Add tools to the ToolManager
 			toolManager.AddTool(brushTool);
@@ -372,14 +372,14 @@ namespace CanvasMan {
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
-			canvasManager.CanvasGraphics.DrawImage((Bitmap)stateManager.Undo(canvasManager.CanvasImage).Clone(), new Point(0, 0));
+			canvasManager.CanvasGraphics.DrawImage((Bitmap)stateManager.Undo().Clone(), new Point(0, 0));
 			RefreshCanvas();
 			Logger.Log("Undo performed.");
 			Logger.Log($"{stateManager.UndoCount}, {stateManager.RedoCount}");
 		}
 
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e) {
-			canvasManager.CanvasGraphics.DrawImage((Bitmap)stateManager.Redo(canvasManager.CanvasImage).Clone(), new Point(0, 0));
+			canvasManager.CanvasGraphics.DrawImage((Bitmap)stateManager.Redo().Clone(), new Point(0, 0));
 			RefreshCanvas();
 			Logger.Log("Redo performed.");
 			Logger.Log($"{stateManager.UndoCount}, {stateManager.RedoCount}");

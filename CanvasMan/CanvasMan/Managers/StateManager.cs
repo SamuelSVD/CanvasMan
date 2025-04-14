@@ -17,9 +17,9 @@ namespace CanvasMan.Managers {
 		/// <summary>
 		/// Saves the current state into the undo stack and clears the redo stack.
 		/// </summary>
-		public void SaveState(Bitmap currentState) {
+		public void SaveState() {
 			// Clone the bitmap to store a copy of the current state.
-			undoStack.Push(CompressBitmapLossless((Bitmap)currentState.Clone()));
+			undoStack.Push(CompressBitmapLossless((Bitmap)canvasManager.CanvasImage.Clone()));
 			// Clear redo since a new operation invalidates the redo history.
 			redoStack.Clear();
 		}
@@ -28,24 +28,24 @@ namespace CanvasMan.Managers {
 		/// Undo: returns the previous state from the undo stack.
 		/// The current state is pushed to the redo stack.
 		/// </summary>
-		public Bitmap Undo(Bitmap currentState) {
+		public Bitmap Undo() {
 			if (undoStack.Count > 1) {
 				redoStack.Push(undoStack.Pop());
 				return DecompressBitmapLossless(undoStack.Peek());
 			}
-			return currentState;
+			return canvasManager.CanvasImage;
 		}
 
 		/// <summary>
 		/// Redo: returns the next state from the redo stack.
 		/// The current state is moved back into the undo stack.
 		/// </summary>
-		public Bitmap Redo(Bitmap currentState) {
+		public Bitmap Redo() {
 			if (redoStack.Count > 0) {
 				undoStack.Push(redoStack.Pop());
 				return DecompressBitmapLossless(undoStack.Peek());
 			}
-			return currentState;
+			return canvasManager.CanvasImage;
 		}
 
 		// Optional helper properties
