@@ -27,19 +27,36 @@ namespace CanvasMan.Tools {
 					}
 				}
 			}
+			if (e.Button == MouseButtons.Right) {
+				using (var brush = new SolidBrush(ColourManager.SecondaryColor)) {
+					CanvasManager.CanvasGraphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+					if (BrushSize == 1) {
+						CanvasManager.CanvasGraphics.FillRectangle(brush, e.X, e.Y, 1, 1);
+					}
+				}
+			}
 			isDragging = true;
 		}
 
 		// Handle the mouse move event (for continuous strokes)
 		public override void OnMouseMove(MouseEventArgs e) {
-			if (e.Button == MouseButtons.Left && lastPoint is not null) {
-				using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
-					CanvasManager.CanvasGraphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+			if (lastPoint is not null) {
+				if (e.Button == MouseButtons.Left && lastPoint is not null) {
+					using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
+						CanvasManager.CanvasGraphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+					}
+					using (var pen = new Pen(ColourManager.CurrentColor, BrushSize)) {
+						CanvasManager.CanvasGraphics.DrawLine(pen, lastPoint!.Value, e.Location);
+					}
 				}
-				using (var pen = new Pen(ColourManager.CurrentColor, BrushSize))
-                {
-                    CanvasManager.CanvasGraphics.DrawLine(pen, lastPoint!.Value, e.Location);
-                }
+				if (e.Button == MouseButtons.Right && lastPoint is not null) {
+					using (var brush = new SolidBrush(ColourManager.SecondaryColor)) {
+						CanvasManager.CanvasGraphics.FillEllipse(brush, e.X - BrushSize / 2, e.Y - BrushSize / 2, BrushSize, BrushSize);
+					}
+					using (var pen = new Pen(ColourManager.SecondaryColor, BrushSize)) {
+						CanvasManager.CanvasGraphics.DrawLine(pen, lastPoint!.Value, e.Location);
+					}
+				}
 				lastPoint = e.Location;
 			}
 		}

@@ -12,20 +12,25 @@ namespace CanvasMan.Tools {
 
 		// Handle mouse down to start the fill operation
 		public override void OnMouseDown(MouseEventArgs e) {
-			if (CanvasManager.CanvasImage != null && e.Button == MouseButtons.Left) {
-				// Perform the flood fill operation
-				Point clickPoint = new Point(e.X, e.Y);
-				if (clickPoint.X < 0) return;
-				if (clickPoint.Y < 0) return;
-				if (clickPoint.X > CanvasManager.CanvasImage.Width) return;
-				if (clickPoint.Y > CanvasManager.CanvasImage.Height) return;
+			// Perform the flood fill operation
+			Point clickPoint = new Point(e.X, e.Y);
+			if (clickPoint.X < 0) return;
+			if (clickPoint.Y < 0) return;
+			if (clickPoint.X > CanvasManager.CanvasImage.Width) return;
+			if (clickPoint.Y > CanvasManager.CanvasImage.Height) return;
+			if (e.Button == MouseButtons.Left) {
 				Color targetColor = CanvasManager.CanvasImage.GetPixel(clickPoint.X, clickPoint.Y);
-
 				if (targetColor != ColourManager.CurrentColor) {
 					FloodFill(CanvasManager.CanvasImage, clickPoint, targetColor, ColourManager.CurrentColor);
+					SaveStateCallback?.Invoke();
 				}
-
-				SaveStateCallback?.Invoke();
+			}
+			if (e.Button == MouseButtons.Right) {
+				Color targetColor = CanvasManager.CanvasImage.GetPixel(clickPoint.X, clickPoint.Y);
+				if (targetColor != ColourManager.SecondaryColor) {
+					FloodFill(CanvasManager.CanvasImage, clickPoint, targetColor, ColourManager.SecondaryColor);
+					SaveStateCallback?.Invoke();
+				}
 			}
 		}
 
