@@ -39,7 +39,10 @@
 			undoToolStripMenuItem = new ToolStripMenuItem();
 			redoToolStripMenuItem = new ToolStripMenuItem();
 			toolsMenu = new ToolStripMenuItem();
+			tableLayoutPanel1 = new TableLayoutPanel();
+			statusStrip1 = new StatusStrip();
 			menuStrip.SuspendLayout();
+			tableLayoutPanel1.SuspendLayout();
 			SuspendLayout();
 			// 
 			// menuStrip
@@ -127,9 +130,33 @@
 			toolsMenu.Size = new Size(32, 19);
 			toolsMenu.Text = "Tools";
 			// 
+			// tableLayoutPanel1
+			// 
+			tableLayoutPanel1.ColumnCount = 1;
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tableLayoutPanel1.Controls.Add(statusStrip1, 0, 1);
+			tableLayoutPanel1.Dock = DockStyle.Fill;
+			tableLayoutPanel1.Location = new Point(0, 40);
+			tableLayoutPanel1.Name = "tableLayoutPanel1";
+			tableLayoutPanel1.RowCount = 2;
+			tableLayoutPanel1.RowStyles.Add(new RowStyle());
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanel1.Size = new Size(1373, 829);
+			tableLayoutPanel1.TabIndex = 1;
+			// 
+			// statusStrip1
+			// 
+			statusStrip1.ImageScalingSize = new Size(32, 32);
+			statusStrip1.Location = new Point(0, 791);
+			statusStrip1.Name = "statusStrip1";
+			statusStrip1.Size = new Size(1373, 38);
+			statusStrip1.TabIndex = 0;
+			statusStrip1.Text = "statusStrip1";
+			// 
 			// MainForm
 			// 
 			ClientSize = new Size(1373, 869);
+			Controls.Add(tableLayoutPanel1);
 			Controls.Add(menuStrip);
 			KeyPreview = true;
 			MainMenuStrip = menuStrip;
@@ -139,6 +166,8 @@
 			PreviewKeyDown += MainForm_PreviewKeyDown;
 			menuStrip.ResumeLayout(false);
 			menuStrip.PerformLayout();
+			tableLayoutPanel1.ResumeLayout(false);
+			tableLayoutPanel1.PerformLayout();
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -157,5 +186,7 @@
 		private ToolStripMenuItem rectangleToolStripMenuItem;
 		private ToolStripMenuItem arrowToolStripMenuItem;
 		private ToolStripMenuItem lineToolStripMenuItem;
+		private TableLayoutPanel tableLayoutPanel1;
+		private StatusStrip statusStrip1;
 	}
 }

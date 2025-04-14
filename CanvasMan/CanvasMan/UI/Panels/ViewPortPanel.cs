@@ -18,8 +18,6 @@ namespace CanvasMan.UI.Panels {
 			// Enable double buffering
 			DoubleBuffered = true;
 
-			// Initial offsets (center the canvas)
-			canvasOffset = new PointF(0, 0);
 
 			// Event subscriptions
 			MouseDown += ViewPortPanel_MouseDown;
@@ -27,6 +25,14 @@ namespace CanvasMan.UI.Panels {
 			MouseUp += ViewPortPanel_MouseUp;
 			MouseWheel += ViewPortPanel_MouseWheel;
 			AutoScroll = true;
+
+			// Initial offsets (center the canvas)
+			canvasOffset = new PointF(0, 0);
+		}
+		public void InitializeCanvas() {
+			int centerX = (ClientSize.Width - canvasManager.CanvasImage.Width) / 2;
+			int centerY = (ClientSize.Height - canvasManager.CanvasImage.Height) / 2;
+			canvasOffset = new PointF(centerX, centerY);
 		}
 
 		protected override void OnPaint(PaintEventArgs e) {
@@ -35,6 +41,7 @@ namespace CanvasMan.UI.Panels {
 			// Clear the background
 			e.Graphics.Clear(Color.Gray);
 
+			e.Graphics.DrawLine(new Pen(Color.Red), 0, 0, Width, Height);
 			// Apply zoom and pan transformations
 			e.Graphics.TranslateTransform(canvasOffset.X, canvasOffset.Y);
 			e.Graphics.ScaleTransform(zoomFactor, zoomFactor);

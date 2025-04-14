@@ -21,7 +21,6 @@ namespace CanvasMan {
 			//InitializeLoggerPanel();
 			//SubscribeToLogger();  // Subscribe to log events
 			InitializeRibbon();
-			InitializeCanvas();
 			InitializeViewport();
 			InitializeTools();
 		}
@@ -32,10 +31,11 @@ namespace CanvasMan {
 			canvasManager = new CanvasManager(800, 600);
 			stateManager = new StateManager(canvasManager);
 			stateManager.SaveState();
-
 		}
 
 		private void InitializeViewport() {
+			InitializeCanvas();
+
 			// Create the viewport (DoubleBufferedPanel)
 			viewportPanel = new ViewPortPanel(canvasManager, canvasPanel)
 			{
@@ -47,7 +47,8 @@ namespace CanvasMan {
 
 			// Add the panels (viewport contains canvasPanel)
 			//viewportPanel.Controls.Add(canvasPanel);
-			this.Controls.Add(viewportPanel);
+			tableLayoutPanel1.Controls.Add(viewportPanel,0,1);
+			viewportPanel.InitializeCanvas();
 		}
 
 		private void InitializeCanvas() {
@@ -83,7 +84,7 @@ namespace CanvasMan {
 			CreateColorRibbonSection();
 			CreateToolsRibbonSection();
 			// Add the ribbon to the form
-			Controls.Add(ribbon);
+			tableLayoutPanel1.Controls.Add(ribbon,0,0);
 
 			// Hook into the SelectedIndexChanged event
 			// ribbon.SelectedIndexChanged += (sender, e) => ribbon.UpdateRibbonHeight();
