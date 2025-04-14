@@ -180,6 +180,7 @@ namespace CanvasMan.Tools {
 		public override void EndToolDefinition(MouseEventArgs e) {
 			isDefiningTool = false;
 			if (!selectionRectangle.IsEmpty) {
+				// Correct X and Width
 				if (selectionRectangle.X < 0) {
 					int x = -selectionRectangle.X;
 					int w = selectionRectangle.Width - x;
@@ -190,6 +191,10 @@ namespace CanvasMan.Tools {
 						selectionRectangle.Width = w;
 					}
 				}
+				if (selectionRectangle.Width + selectionRectangle.X > originalCanvasBitmap.Width) {
+					selectionRectangle.Width = originalCanvasBitmap.Width - selectionRectangle.X;
+				}
+				// Correct Y and Height
 				if (selectionRectangle.Y < 0) {
 					int y = -selectionRectangle.Y;
 					int h = selectionRectangle.Height - y;
@@ -199,6 +204,9 @@ namespace CanvasMan.Tools {
 						selectionRectangle.Y = 0;
 						selectionRectangle.Height = h;
 					}
+				}
+				if (selectionRectangle.Height + selectionRectangle.Y > originalCanvasBitmap.Height) {
+					selectionRectangle.Height = originalCanvasBitmap.Height - selectionRectangle.Y;
 				}
 				// Capture the selected region from the canvas bitmap
 				if (selectionRectangle.Width > 0 && selectionRectangle.Height > 0) {

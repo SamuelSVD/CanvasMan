@@ -80,9 +80,11 @@ namespace CanvasMan {
 			ribbon.AddTab("Home");
 			ribbon.AddGroupToTab("Home", "Color Panel");
 			ribbon.AddGroupToTab("Home", "Tools");
+			ribbon.AddGroupToTab("Home", "Selection");
 
 			CreateColorRibbonSection();
 			CreateToolsRibbonSection();
+			CreateSelectionRibbonSection();
 			// Add the ribbon to the form
 			tableLayoutPanel1.Controls.Add(ribbon,0,0);
 
@@ -216,14 +218,13 @@ namespace CanvasMan {
 			RibbonButtonGroup toolsGroup = new RibbonButtonGroup("Tools", 3);
 			ribbon.AddControlToGroup("Tools", toolsGroup);
 
-			toolsGroup.AddButton("Select", selectToolStripMenuItem_Click);
 			toolsGroup.AddButton("Brush", brushToolStripMenuItem_Click);
 			toolsGroup.AddButton("Fill", fillToolStripMenuItem_Click);
 			toolsGroup.AddButton("Eraser", (sender, e) => { });
 			toolsGroup.AddButton("Rectangle", rectangleToolStripMenuItem_Click);
 			toolsGroup.AddButton("Arrow", arrowToolStripMenuItem_Click);
 			toolsGroup.AddButton("Line", lineToolStripMenuItem_Click);
-			
+
 			// Create label for brush size
 			Label brushSizeLabel = new Label
 			{
@@ -249,11 +250,12 @@ namespace CanvasMan {
 				int newBrushSize = brushSizeSlider.Value;
 				toolManager.SetBrushSize(newBrushSize); // Pass the new size to the BrushTool
 			};
-
-			//toolTableLayoutPanel.Controls.Add(brushSizeLabel, 3, 0);
-			//toolTableLayoutPanel.Controls.Add(brushSizeSlider, 3, 1);
-
-
+		}
+		private void CreateSelectionRibbonSection() {
+			// Create a drawing tools group
+			RibbonButtonGroup selectionButtonGroup = new RibbonButtonGroup("Selection", 3);
+			ribbon.AddControlToGroup("Selection", selectionButtonGroup);
+			selectionButtonGroup.AddButton("Select", selectToolStripMenuItem_Click);
 		}
 		private void InitializeTools() {
 
