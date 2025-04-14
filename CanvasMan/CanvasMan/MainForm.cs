@@ -1,7 +1,7 @@
 using CanvasMan.Managers;
-using CanvasMan.Panels;
 using CanvasMan.Tools;
 using CanvasMan.UI;
+using CanvasMan.UI.Panels;
 using System.Drawing;
 
 namespace CanvasMan {

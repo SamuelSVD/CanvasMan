@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace CanvasMan.Panels {
+namespace CanvasMan.UI.Panels {
 	public class DoubleBufferedPanel : Panel {
 		public DoubleBufferedPanel() {
 			// Enable double buffering to reduce flicker

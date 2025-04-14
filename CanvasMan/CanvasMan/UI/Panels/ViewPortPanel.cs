@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CanvasMan.Panels {
+namespace CanvasMan.UI.Panels {
 	public class ViewPortPanel : DoubleBufferedPanel {
 		private Point dragStartPoint;       // Tracks the starting point for dragging
 		private bool isDragging;            // Flag for tracking if dragging is active
@@ -109,7 +109,7 @@ namespace CanvasMan.Panels {
 		private void ViewPortPanel_MouseWheel(object sender, MouseEventArgs e) {
 			if (ModifierKeys == Keys.Control) // Ensure CTRL is held for zooming
 			{
-				float zoomDelta = (e.Delta > 0) ? 0.2f : -0.2f;
+				float zoomDelta = e.Delta > 0 ? 0.2f : -0.2f;
 				AdjustCanvasOffsetOnZoom(e.Location, zoomDelta);
 			}
 		}
@@ -135,8 +135,8 @@ namespace CanvasMan.Panels {
 			zoomFactor = Math.Max(0.1f, zoomFactor + zoomDelta); // Prevent zoom factor from going too low
 
 			// Calculate new offset to maintain cursor position
-			canvasOffset.X = mouseLocation.X - (relativePosition.X * zoomFactor);
-			canvasOffset.Y = mouseLocation.Y - (relativePosition.Y * zoomFactor);
+			canvasOffset.X = mouseLocation.X - relativePosition.X * zoomFactor;
+			canvasOffset.Y = mouseLocation.Y - relativePosition.Y * zoomFactor;
 
 			Invalidate(); // Redraw viewport
 		}
