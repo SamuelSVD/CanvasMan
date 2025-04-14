@@ -41,7 +41,7 @@ namespace CanvasMan.UI.Panels {
 			// Clear the background
 			e.Graphics.Clear(Color.Gray);
 
-			e.Graphics.DrawLine(new Pen(Color.Red), 0, 0, Width, Height);
+			// e.Graphics.DrawLine(new Pen(Color.Red), 0, 0, Width, Height);
 			// Apply zoom and pan transformations
 			e.Graphics.TranslateTransform(canvasOffset.X, canvasOffset.Y);
 			e.Graphics.ScaleTransform(zoomFactor, zoomFactor);
