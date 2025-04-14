@@ -43,8 +43,19 @@ namespace CanvasMan.Tools {
 			}
 		}
 
+
+		private void UpdateCursor(Point mousePosition) {
+			if (!selectionRectangle.IsEmpty) {
+				if (selectionRectangle.Contains(mousePosition)) {
+					Cursor.Current = Cursors.SizeAll;
+					return;
+				}
+			}
+			Cursor.Current = Cursors.Default;
+		}
 		// Handle mouse movement for resizing the selection or dragging
 		public override void OnMouseMove(MouseEventArgs e) {
+			if (isToolDefined) UpdateCursor(e.Location);
 			if (isDraggingTool && isToolDefined) {
 				// Calculate the offset for dragging
 				int dx = e.Location.X - initialDragPoint.X;
@@ -213,11 +224,23 @@ namespace CanvasMan.Tools {
 					selectedRegion = originalCanvasBitmap?.Clone(selectionRectangle, CanvasManager.CanvasImage.PixelFormat);
 					isToolDefined = true;
 					initialSelectionRectanglePosition = new Point(selectionRectangle.X, selectionRectangle.Y);
+					DrawCurrentState();
+					// Define the brush for filling the rectangle
+					using (SolidBrush brush = new SolidBrush(ColourManager.SecondaryColor)) {
+						CanvasManager.CanvasGraphics.FillRectangle(brush, selectionRectangle);
+					}
+					SaveCanvasBitmapState();
+					DrawCurrentState();
 				} else {
 					// Commit the dragged location and clear the selection
 					isDraggingTool = false;
 					DrawCurrentState();
+					// Define the brush for filling the rectangle
+					using (SolidBrush brush = new SolidBrush(ColourManager.SecondaryColor)) {
+						CanvasManager.CanvasGraphics.FillRectangle(brush, selectionRectangle);
+					}
 					SaveCanvasBitmapState();
+					DrawCurrentState();
 				}
 			}
 		}

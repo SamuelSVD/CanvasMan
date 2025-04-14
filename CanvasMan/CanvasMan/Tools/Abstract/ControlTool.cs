@@ -48,7 +48,7 @@ namespace CanvasMan.Tools.Abstract {
 			Cursor.Current = Cursors.Default;
 		}
 		public override void OnMouseMove(MouseEventArgs e) {
-			UpdateCursor(e.Location);
+			if(isToolDefined) UpdateCursor(e.Location);
 
 			if (ControlManager.OnMouseMove(e.Location)) {
 				isToolChanged = true;
