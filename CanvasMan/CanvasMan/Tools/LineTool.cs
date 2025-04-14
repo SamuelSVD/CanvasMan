@@ -10,7 +10,10 @@ namespace CanvasMan.Tools {
 		public int BrushSize = 5;
 		public LineTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Line") : base(colourManager, canvasManager, name) {
 		}
-
+		public override void DrawCurrentState() {
+			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
+			DrawLine(CanvasManager.CanvasGraphics);
+		}
 		private void DrawLine(Graphics graphics) {
 			using (var brush = new SolidBrush(ColourManager.CurrentColor)) {
 				graphics.FillEllipse(brush, startPoint.Location.X - BrushSize / 2, startPoint.Location.Y - BrushSize / 2, BrushSize, BrushSize);
@@ -19,11 +22,6 @@ namespace CanvasMan.Tools {
 			using (Pen pen = new Pen(ColourManager.CurrentColor, 3)) {
 				graphics.DrawLine(pen, startPoint.Location, endPoint.Location);
 			}
-		}
-
-		public override void DrawCurrentState() {
-			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
-			DrawLine(CanvasManager.CanvasGraphics);
 		}
 	}
 }

@@ -34,8 +34,8 @@ namespace CanvasMan.Controls {
 			if (IsActive) {
 				int dx = mouseLocation.X - initialDragPoint.X;
 				int dy = mouseLocation.Y - initialDragPoint.Y;
-				EndpointA.Location = new Point(initialEndpointA.X + dx, initialEndpointA.Y + dy);
-				EndpointB.Location = new Point(initialEndpointB.X + dx, initialEndpointB.Y + dy);
+				EndpointA.SetLocation(new Point(initialEndpointA.X + dx, initialEndpointA.Y + dy));
+				EndpointB.SetLocation(new Point(initialEndpointB.X + dx, initialEndpointB.Y + dy));
 			}
 			return IsActive;
 		}
@@ -45,6 +45,10 @@ namespace CanvasMan.Controls {
 				IsActive = false;
 			}
 			return IsActive;
+		}
+
+		protected override void OnOffset(float x, float y) {
+			throw new NotImplementedException();
 		}
 	}
 }

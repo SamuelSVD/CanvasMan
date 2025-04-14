@@ -34,11 +34,11 @@
 			selectToolStripMenuItem = new ToolStripMenuItem();
 			rectangleToolStripMenuItem = new ToolStripMenuItem();
 			arrowToolStripMenuItem = new ToolStripMenuItem();
+			lineToolStripMenuItem = new ToolStripMenuItem();
 			editToolStripMenuItem = new ToolStripMenuItem();
 			undoToolStripMenuItem = new ToolStripMenuItem();
 			redoToolStripMenuItem = new ToolStripMenuItem();
 			toolsMenu = new ToolStripMenuItem();
-			lineToolStripMenuItem = new ToolStripMenuItem();
 			menuStrip.SuspendLayout();
 			SuspendLayout();
 			// 
@@ -48,56 +48,63 @@
 			menuStrip.Items.AddRange(new ToolStripItem[] { toolsToolStripMenuItem, editToolStripMenuItem });
 			menuStrip.Location = new Point(0, 0);
 			menuStrip.Name = "menuStrip";
-			menuStrip.Size = new Size(974, 42);
+			menuStrip.Size = new Size(1373, 40);
 			menuStrip.TabIndex = 0;
 			// 
 			// toolsToolStripMenuItem
 			// 
 			toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { brushToolToolStripMenuItem, fillToolToolStripMenuItem, selectToolStripMenuItem, rectangleToolStripMenuItem, arrowToolStripMenuItem, lineToolStripMenuItem });
 			toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			toolsToolStripMenuItem.Size = new Size(89, 38);
+			toolsToolStripMenuItem.Size = new Size(89, 36);
 			toolsToolStripMenuItem.Text = "Tools";
 			// 
 			// brushToolToolStripMenuItem
 			// 
 			brushToolToolStripMenuItem.Name = "brushToolToolStripMenuItem";
-			brushToolToolStripMenuItem.Size = new Size(359, 44);
+			brushToolToolStripMenuItem.Size = new Size(251, 44);
 			brushToolToolStripMenuItem.Text = "Brush";
 			brushToolToolStripMenuItem.Click += brushToolStripMenuItem_Click;
 			// 
 			// fillToolToolStripMenuItem
 			// 
 			fillToolToolStripMenuItem.Name = "fillToolToolStripMenuItem";
-			fillToolToolStripMenuItem.Size = new Size(359, 44);
+			fillToolToolStripMenuItem.Size = new Size(251, 44);
 			fillToolToolStripMenuItem.Text = "Fill";
 			fillToolToolStripMenuItem.Click += fillToolStripMenuItem_Click;
 			// 
 			// selectToolStripMenuItem
 			// 
 			selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-			selectToolStripMenuItem.Size = new Size(359, 44);
+			selectToolStripMenuItem.Size = new Size(251, 44);
 			selectToolStripMenuItem.Text = "Select";
 			selectToolStripMenuItem.Click += selectToolStripMenuItem_Click;
 			// 
 			// rectangleToolStripMenuItem
 			// 
 			rectangleToolStripMenuItem.Name = "rectangleToolStripMenuItem";
-			rectangleToolStripMenuItem.Size = new Size(359, 44);
+			rectangleToolStripMenuItem.Size = new Size(251, 44);
 			rectangleToolStripMenuItem.Text = "Rectangle";
 			rectangleToolStripMenuItem.Click += rectangleToolStripMenuItem_Click;
 			// 
 			// arrowToolStripMenuItem
 			// 
 			arrowToolStripMenuItem.Name = "arrowToolStripMenuItem";
-			arrowToolStripMenuItem.Size = new Size(359, 44);
+			arrowToolStripMenuItem.Size = new Size(251, 44);
 			arrowToolStripMenuItem.Text = "Arrow";
 			arrowToolStripMenuItem.Click += arrowToolStripMenuItem_Click;
+			// 
+			// lineToolStripMenuItem
+			// 
+			lineToolStripMenuItem.Name = "lineToolStripMenuItem";
+			lineToolStripMenuItem.Size = new Size(251, 44);
+			lineToolStripMenuItem.Text = "Line";
+			lineToolStripMenuItem.Click += lineToolStripMenuItem_Click;
 			// 
 			// editToolStripMenuItem
 			// 
 			editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { undoToolStripMenuItem, redoToolStripMenuItem });
 			editToolStripMenuItem.Name = "editToolStripMenuItem";
-			editToolStripMenuItem.Size = new Size(74, 38);
+			editToolStripMenuItem.Size = new Size(74, 36);
 			editToolStripMenuItem.Text = "Edit";
 			// 
 			// undoToolStripMenuItem
@@ -120,16 +127,9 @@
 			toolsMenu.Size = new Size(32, 19);
 			toolsMenu.Text = "Tools";
 			// 
-			// lineToolStripMenuItem
-			// 
-			lineToolStripMenuItem.Name = "lineToolStripMenuItem";
-			lineToolStripMenuItem.Size = new Size(359, 44);
-			lineToolStripMenuItem.Text = "Line";
-			lineToolStripMenuItem.Click += lineToolStripMenuItem_Click;
-			// 
 			// MainForm
 			// 
-			ClientSize = new Size(974, 629);
+			ClientSize = new Size(1373, 869);
 			Controls.Add(menuStrip);
 			KeyPreview = true;
 			MainMenuStrip = menuStrip;

@@ -7,8 +7,9 @@ namespace CanvasMan.Managers {
 	public class StateManager {
 		private readonly Stack<byte[]> undoStack;
 		private readonly Stack<byte[]> redoStack;
-
-		public StateManager() {
+		private CanvasManager canvasManager;
+		public StateManager(CanvasManager canvasManager) {
+			this.canvasManager = canvasManager;
 			undoStack = new Stack<byte[]>();
 			redoStack = new Stack<byte[]>();
 		}

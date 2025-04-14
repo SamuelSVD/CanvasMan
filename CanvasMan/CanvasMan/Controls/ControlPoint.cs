@@ -3,9 +3,16 @@ using CanvasMan.Utils;
 
 namespace CanvasMan.Controls {
 	public class ControlPoint : ControlBase {
-		public Point Location = Point.Empty;
-		private Point initialLocation = Point.Empty;
-		private Point initialDragPoint = Point.Empty;
+		public Point Location {
+			get {
+				return ControlUtils.Point(LocationF);
+			}
+		}
+		public virtual PointF LocationF {
+			get;
+			protected set;
+		} = Point.Empty;
+		private PointF lastDragPoint = Point.Empty;
 		public bool IsActive { get; set; } = false;
 		Action<MovementDelta>? OnMovedCallback { get; set; }
 		public override void Draw(Graphics graphics) {
@@ -19,17 +26,17 @@ namespace CanvasMan.Controls {
 		public override bool OnMouseDown(Point mouseLocation, double grabRadius) {
 			if (ControlUtils.IsNearPoint(mouseLocation, Location, grabRadius)) {
 				IsActive = true;
-				initialLocation = Location;
-				initialDragPoint = mouseLocation;
+				lastDragPoint = mouseLocation;
 			}
 			return IsActive;
 		}
 
 		public override bool OnMouseMove(Point mouseLocation) {
 			if (IsActive) {
-				int dx = mouseLocation.X - initialDragPoint.X;
-				int dy = mouseLocation.Y - initialDragPoint.Y;
-				Location = new Point(initialLocation.X + dx, initialLocation.Y + dy);
+				int dx = (int) (mouseLocation.X - lastDragPoint.X);
+				int dy = (int) (mouseLocation.Y - lastDragPoint.Y);
+				Offset(dx, dy);
+				lastDragPoint = mouseLocation;
 			}
 			return IsActive;
 		}
@@ -39,6 +46,15 @@ namespace CanvasMan.Controls {
 				IsActive = false;
 			}
 			return IsActive;
+		}
+		public void SetLocation(Point location) {
+			SetLocation(ControlUtils.PointF(location));
+		}
+		public void SetLocation(PointF location) {
+			LocationF = location;
+		}
+		protected override void OnOffset(float x, float y) {
+			LocationF = new PointF(Location.X + x, Location.Y + y);
 		}
 	}
 }

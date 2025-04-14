@@ -12,7 +12,11 @@ namespace CanvasMan.Managers {
 		public ControlManager() {
 			Controls = new List<ControlBase>();
 		}
-
+		public void DeactivateAll() {
+			foreach (ControlBase control in Controls) {
+				control.IsActive = false;
+			}
+		}
 		public bool IsActive() {
 			foreach (ControlBase control in Controls) {
 				if (control.IsActive) {

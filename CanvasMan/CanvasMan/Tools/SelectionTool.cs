@@ -232,23 +232,32 @@ namespace CanvasMan.Tools {
 		public bool OnProcessCommandKey(ref Message msg, Keys keyData) {
 			// Handle CTRL + Arrow keys for duplicating and moving selection
 			int offsetX = 0, offsetY = 0;
+			bool moving = false;
 
 			switch (keyData) {
 				case Keys.Up:
 					offsetY = -1; // Move up
+					moving = true;
 					break;
 				case Keys.Down:
 					offsetY = 1; // Move down
+					moving = true;
 					break;
 				case Keys.Left:
 					offsetX = -1; // Move left
+					moving = true;
 					break;
 				case Keys.Right:
 					offsetX = 1; // Move right
+					moving = true;
 					break;
+				case Keys.ControlKey:
+					return true;
 			}
-			MoveSelection(offsetX, offsetY);
-			return true;
+			if (moving) {
+				return false;
+			}
+			return false;
 		}
 	}
 }

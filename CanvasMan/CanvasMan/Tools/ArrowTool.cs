@@ -10,7 +10,10 @@ namespace CanvasMan.Tools {
 
 		public ArrowTool(ColourManager colourManager, CanvasManager canvasManager, string name = "Arrow") : base(colourManager, canvasManager, name) {
 		}
-
+		public override void DrawCurrentState() {
+			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
+			DrawArrow(CanvasManager.CanvasGraphics);
+		}
 		private void DrawArrow(Graphics graphics) {
 			using (Pen pen = new Pen(ColourManager.CurrentColor, 3)) {
 				graphics.DrawLine(pen, startPoint.Location, endPoint.Location);
@@ -19,7 +22,6 @@ namespace CanvasMan.Tools {
 				DrawArrowHead(graphics, pen, startPoint.Location, endPoint.Location);
 			}
 		}
-
 		private void DrawArrowHead(Graphics graphics, Pen pen, Point start, Point end) {
 			const int arrowSize = 10;
 			var direction = new PointF(end.X - start.X, end.Y - start.Y);
@@ -38,11 +40,6 @@ namespace CanvasMan.Tools {
 				graphics.DrawLine(pen, end, Point.Round(arrowPoint1));
 				graphics.DrawLine(pen, end, Point.Round(arrowPoint2));
 			}
-		}
-
-		public override void DrawCurrentState() {
-			CanvasManager.CanvasGraphics.DrawImage(originalCanvasBitmap, 0, 0);
-			DrawArrow(CanvasManager.CanvasGraphics);
 		}
 	}
 }

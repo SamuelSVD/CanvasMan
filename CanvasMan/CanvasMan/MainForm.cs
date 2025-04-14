@@ -16,6 +16,7 @@ namespace CanvasMan {
 		private Ribbon ribbon;
 		public MainForm() {
 			InitializeComponent();
+			Size = new Size(1920, 1080);
 			InitializeManagers();
 			//InitializeLoggerPanel();
 			//SubscribeToLogger();  // Subscribe to log events
@@ -29,6 +30,9 @@ namespace CanvasMan {
 			colourManager = new ColourManager();
 			// Initialize the canvas manager
 			canvasManager = new CanvasManager(800, 600);
+			stateManager = new StateManager(canvasManager);
+			stateManager.SaveState(canvasManager.CanvasImage);
+
 		}
 
 		private void InitializeViewport() {
@@ -38,6 +42,7 @@ namespace CanvasMan {
 				Dock = DockStyle.Fill, // Fill the main form
 				BackColor = Color.Gray // Optional: distinguish it visually
 			};
+
 			viewportPanel.PreviewKeyDown += MainForm_PreviewKeyDown;
 
 			// Add the panels (viewport contains canvasPanel)
@@ -50,7 +55,7 @@ namespace CanvasMan {
 			canvasPanel = new DoubleBufferedPanel
 			{
 				Location = new Point(10, 40),
-				Size = new Size(800, 600),
+				//Size = new Size(800, 600),
 				BackgroundImage = canvasManager.CanvasImage,
 				BackgroundImageLayout = ImageLayout.None,
 				BorderStyle = BorderStyle.FixedSingle
@@ -60,9 +65,6 @@ namespace CanvasMan {
 			canvasPanel.MouseMove += CanvasPanel_MouseMove;
 			canvasPanel.MouseUp += CanvasPanel_MouseUp;
 			canvasPanel.PreviewKeyDown += MainForm_PreviewKeyDown;
-
-			stateManager = new StateManager();
-			stateManager.SaveState(canvasManager.CanvasImage);
 		}
 
 		private readonly Color[] basePalette = new Color[]
@@ -81,10 +83,10 @@ namespace CanvasMan {
 			CreateColorRibbonSection();
 			CreateToolsRibbonSection();
 			// Add the ribbon to the form
-			this.Controls.Add(ribbon);
+			Controls.Add(ribbon);
 
 			// Hook into the SelectedIndexChanged event
-			ribbon.SelectedIndexChanged += (sender, e) => ribbon.UpdateRibbonHeight();
+			// ribbon.SelectedIndexChanged += (sender, e) => ribbon.UpdateRibbonHeight();
 
 			// Initial height adjustment
 			ribbon.UpdateRibbonHeight();
